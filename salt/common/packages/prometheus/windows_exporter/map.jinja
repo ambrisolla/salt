@@ -1,0 +1,21 @@
+#!jinja|yaml
+
+{% set windows_exporter = {
+  'version' : '0.20.0',
+  'port' : 9109,
+  'source_hash' : '822166c33ce415436a287f4f5bf34c9737da5201cda3b6a31ffc5b2be5023679',
+  'collectors' : [
+    'cpu',
+    'cpu_info',
+    'cs',
+    'logical_disk',
+    'logon',
+    'memory',
+    'net',
+    'os',
+    'service',
+    'system',
+    'textfile'
+  ]
+} %}
+

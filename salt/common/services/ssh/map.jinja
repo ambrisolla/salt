@@ -1,0 +1,8 @@
+{% set sshd_config = {
+  'PermitEmptyPasswords'   : 'no',
+  'PermitRootLogin'        : 'yes',
+  'PasswordAuthentication' : 'yes',
+  'Port'                   : '22',
+  'ClientAliveInterval'    : 60,
+  'ClientAliveCountMax'    : 30
+} %}

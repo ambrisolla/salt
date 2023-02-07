@@ -1,0 +1,45 @@
+#!jinja|yaml
+
+{% if grains['os_family'] == 'RedHat' and grains['osmajorrelease'] == 8 %}
+  {% set packages = {
+    'to_remove' : [
+      'nano'
+    ],
+    'to_install' : [
+      'net-tools',
+      'openssh-server',
+      'python3-inotify',
+      'telnet',
+      'unzip',
+      'vim-enhanced',
+      'zip'
+    ]}
+  %}
+{% elif grains['os'] == 'Ubuntu' and grains['osmajorrelease'] in [18,20,22] %}
+  {% set packages = {
+    'to_remove' : [
+      'nano'
+    ],
+    'to_install' : [
+      'net-tools',
+      'openssh-server',
+      'python3-pyinotify',
+      'telnet',
+      'unzip',
+      'vim',
+      'zip',
+      'zsh'
+    ]}
+   %}
+{% elif grains['kernel'] == 'Windows' %}
+{% set packages = {
+  'to_install' : [
+    'googlechrome',
+    'notepadplusplus.install',
+    'dotnetfx'
+  ],
+  'to_remove' : [
+    'vlc'
+  ]
+} %}
+{% endif %}
