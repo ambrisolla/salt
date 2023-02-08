@@ -5,7 +5,7 @@
 
 dns:
   file.managed:
-    - source: salt://common/configurations/dns/resolv.conf
+    - source: salt://common/configurations/dns/files/resolv.conf
     - name: /etc/resolv.conf
     - mode: 644
     - user: root

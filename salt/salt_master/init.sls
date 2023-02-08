@@ -18,5 +18,12 @@ salt_master_files:
     - enable: True
       watch: 
         - file: salt_master_files
-
-
+salt_api:
+  file.managed:
+    - name: /etc/salt/master.d/salt_api.conf
+    - source: salt://salt_master/files/salt_api.conf
+  service.running:
+    - name: salt-api
+    - enable: True
+      watch: 
+        - file: salt_api
