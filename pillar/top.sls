@@ -1,1 +1,3 @@
-# pillar top.sls file
+base:
+  'G@kernel:Linux':
+    - common.beacons

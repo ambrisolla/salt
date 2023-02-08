@@ -1,0 +1,13 @@
+#!jinja|yaml
+
+{% set localtime = salt['grains.filter_by'](
+  {
+    'Debian': {
+      'localtime_path': '/usr/share/zoneinfo/Etc/UTC',
+      'current_config':  salt['cmd.run']('readlink -f /etc/localtime')
+  },
+    'RedHat': {
+      'localtime_path': '/usr/share/zoneinfo/UTC',
+      'current_config': salt['cmd.run']('readlink -f /etc/localtime')
+  },
+})%}
