@@ -1,4 +1,3 @@
-# teste 
 name: salt-infrastructure-management
 run-name: Deploying Salt Infrastructure Management
 on:
@@ -10,7 +9,7 @@ on:
       - develop
     patchs:
 jobs:
-  run_if:
+  run-if:
     if: github.event.merge == true
     runs-on: salt
     steps:
