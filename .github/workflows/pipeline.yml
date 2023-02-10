@@ -9,11 +9,9 @@ on:
       - develop
     patchs:
 jobs:
-  run-if:
-    if: github.event.pull_request.merged == true
+  if_merged:
+    if: ${{ github.event.issue.pull_request }}
     runs-on: salt
     steps:
-      - run: uname -a
-      
-    
-
+    - run: |
+      uname -a
