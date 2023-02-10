@@ -14,5 +14,5 @@ jobs:
     #if: github.event.issue.pull_request == true
     steps:      
       - name: Github 
-        run : env
+        run : echo "${{ github.event.issue.pull_request }}"
       
