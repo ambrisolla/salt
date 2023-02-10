@@ -7,11 +7,9 @@ on:
     branches:
       - main
       - develop
-    patchs:
 jobs:
   if_merged:
     if: ${{ github.event.issue.pull_request }}
     runs-on: salt
     steps:
-    - run: |
-      uname -a
+      - run: uname -a
