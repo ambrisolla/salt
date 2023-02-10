@@ -10,9 +10,10 @@ on:
 jobs:
   if_merged:
     name: Teste job
-    runs-on: salt
+    runs-on: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     if: github.event.pull_request.merged == true
     steps:      
       - name: Github 
-        run : uname -a
+        uses: actions/checkout@v3
+        run : ls -l
       
