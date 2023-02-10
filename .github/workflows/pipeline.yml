@@ -9,10 +9,10 @@ on: push
   #    - develop
 jobs:
   if_merged:
+    name: Teste job
     #if: ${{ github.event.issue.pull_request }}
     runs-on: salt
-    steps:
-      - name: Teste
-        uses: actions/checkout@v3
-      - run : uname -a
+    steps:      
+      - name: Github 
+        run : uname -a
       
