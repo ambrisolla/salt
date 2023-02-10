@@ -10,7 +10,7 @@ on:
       - develop
     patchs:
 jobs:
-  run_if:
+  run-if:
     if: github.event.merge == true
     runs-on: salt
     steps:
