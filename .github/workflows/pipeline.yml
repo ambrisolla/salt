@@ -12,4 +12,7 @@ jobs:
     #if: ${{ github.event.issue.pull_request }}
     runs-on: salt
     steps:
-      - run: uname -a
+      - name: Teste
+        uses: actions/checkout@v3
+      - run : uname -a
+      
