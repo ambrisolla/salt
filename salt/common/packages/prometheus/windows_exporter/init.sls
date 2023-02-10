@@ -1,10 +1,10 @@
 {% if grains['kernel'] != 'Windows' %}
 wrong-os-version:
-  test.fail_without_changes:
+  test.succeed_without_changes:
     - name: This is not a Windows OS!
-    - failhard: True
-{% endif %}
-
+{% else %}
 Install windows_exporter:
   pkg.installed:
     - name: windows_exporter
+{% endif %}
+

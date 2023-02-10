@@ -8,11 +8,9 @@
 
 {% if grains['kernel'] != 'Linux' %}
 wrong-os-version:
-  test.fail_without_changes:
-    - name: This is not a Linux OS!
-    - failhard: True
-{% endif %}
-
+  test.succeed_without_changes:
+    - name: This is not a Linux OS!    
+{% else %}
 create group prometheus:
   group.present:
     - name: prometheus
@@ -71,3 +69,4 @@ enable and start service:
     - enable: True
     - reload: True
     - failhard: True
+{% endif %}
