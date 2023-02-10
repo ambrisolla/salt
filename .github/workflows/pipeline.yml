@@ -10,7 +10,7 @@ on:
     patchs:
 jobs:
   run-if:
-    if: github.event.merge == true
+    if: github.event.merged == true
     runs-on: salt
     steps:
       - run: uname -a
