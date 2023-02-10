@@ -1,17 +1,17 @@
 name: salt-infrastructure-management
 run-name: Deploying Salt Infrastructure Management
-on: push
-  #pull_request:
-  #  types:
-  #    - closed
-  #  branches:
-  #    - main
-  #    - develop
+on: 
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+      - develop
 jobs:
   if_merged:
     name: Teste job
-    #if: ${{ github.event.issue.pull_request }}
     runs-on: salt
+    if: ${{ github.event.issue.pull_request }}
     steps:      
       - name: Github 
         run : uname -a
