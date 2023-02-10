@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     if: github.event.pull_request.merged == true
     steps:      
-      - name: Github 
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - name: Teste
         run : ls -l
       
