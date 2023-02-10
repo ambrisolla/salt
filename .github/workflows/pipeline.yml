@@ -11,7 +11,7 @@ jobs:
   if_merged:
     name: Teste job
     runs-on: salt
-    if: ${{ github.event.issue.pull_request }}
+    if: github.event.issue.pull_request == true
     steps:      
       - name: Github 
         run : uname -a
