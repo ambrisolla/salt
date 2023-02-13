@@ -9,7 +9,7 @@ on:
 env:
   STATES_DIR: /srv/validate_salt
   SALT_ENV: validate
-  PILLAR_DIR: /srv/pillar/validate_pillar
+  PILLAR_DIR: /srv/validate_pillar
 
 jobs:
   validate:
@@ -22,8 +22,13 @@ jobs:
 
       - name: Install requirements
         run : |
-          sudo yum install -y epel-release && \
-          sudo yum install -y jq rsync
+          sudo yum install -y epel-release
+          sudo yum install -y jq rsync snapd
+          sudo systemctl enable --now snapd.socket
+          sudo ln -s /var/lib/snapd/snap /snap
+          sudo snap install yq
+
+
 
       - name: Create "test" environment
         run: |
@@ -33,7 +38,7 @@ jobs:
           sudo rsync -av salt/* ${STATES_DIR}/ --delete
           sudo rsync -av pillar/* ${PILLAR_DIR}/ --delete
       
-      - name: Check Salt States ans Salt Pillar
+      - name: Check Salt Pillars and Salt States
         run: |
           sudo .github/workflows/scripts/validate.sh ${STATES_DIR} ${PILLAR_DIR} ${SALT_ENV}
 
