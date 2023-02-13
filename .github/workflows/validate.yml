@@ -12,8 +12,8 @@ env:
   TEST_SALT_ENV: test
 
 jobs:
-  test:
-    name: Test Salt States and Salt Pillars
+  validate:
+    name: Validate Salt States and Salt Pillars
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
@@ -35,4 +35,4 @@ jobs:
       
       - name: Check Salt States
         run: |
-          sudo .github/workflows/scripts/teste-states.sh ${TEST_STATES_DIR} ${TEST_SALT_ENV}
+          sudo .github/workflows/scripts/validate.sh ${TEST_STATES_DIR} ${TEST_SALT_ENV}
