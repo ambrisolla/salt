@@ -3,8 +3,6 @@
 STATES_DIR=$1
 PILLAR_DIR=$2
 SALT_ENV=$3
-
-
 LOG_FILE="/tmp/$(echo $0 | awk -F'/' '{print $NF}')-error.log"
 
 # States
@@ -26,7 +24,6 @@ do
 done
 
 ## Pillars
-
 PILLARS=$( find ${PILLAR_DIR} -name "*.sls" )
 for pillar in ${PILLARS[@]}
 do
