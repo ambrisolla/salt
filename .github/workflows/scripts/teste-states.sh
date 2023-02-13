@@ -5,8 +5,6 @@ TEST_STATES_DIR=$1
 TEST_SALT_ENV=$2
 LOG_FILE="/tmp/$(echo $0 | awk -F'/' '{print $NF}')-error.log"
 
-env
-exit
 STATES=$( 
   find ${TEST_STATES_DIR} -name "*.sls" | \
   egrep -v "top.sls$|\/reactor\/|\/win/\repo-ng\/" | \
