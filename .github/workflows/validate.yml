@@ -24,11 +24,12 @@ jobs:
         run : |
           sudo yum install -y epel-release
           sudo yum install -y jq rsync snapd
-          sudo systemctl enable --now snapd.socket
-          sudo ln -s /var/lib/snapd/snap /snap
-          sudo snap install yq
-
-
+          if [[ ! $(snap list yqs 2> /dev/null) ]]
+          then
+            sudo systemctl enable --now snapd.socket
+            sudo ln -s /var/lib/snapd/snap /snap
+            sudo snap install yq
+          fi
 
       - name: Create "test" environment
         run: |
