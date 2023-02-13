@@ -9,10 +9,11 @@ on:
         - develop
 env:
   TEST_STATES_DIR: /srv/test
+  TEST_SALT_ENV: test
 
 jobs:
   test:
-    name: 
+    name: Test Salt States and Salt Pillars
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
@@ -31,3 +32,8 @@ jobs:
           sudo mkdir -p $TEST_STATES_DIR
           sudo rm -rf ${TEST_STATES_DIR}/*
           sudo rsync -av salt/* ${TEST_STATES_DIR}/ --delete
+      
+      - name: Check Salt States
+        run: |
+          pwd
+          ls -lR
