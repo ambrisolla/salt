@@ -28,4 +28,4 @@ jobs:
       
       - name: Run Highstate on Master
         run: | 
-          sudo salt-call state.highstate --async
+          sudo salt-call state.highstate
