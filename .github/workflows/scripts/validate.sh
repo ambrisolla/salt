@@ -21,7 +21,7 @@ do
     true)  message="PASSED" ;;
     false) message="FAILED" ;;
   esac
-  echo -ne " - checking state ${state}... ${message}\n"
+  echo -ne " - checking state: ${state}... ${message}\n"
   status_list+=(${check})
 done
 
@@ -37,7 +37,7 @@ check=$(echo $yaml | yq > /dev/null 2> /dev/null ; echo $? )
     0)  message="PASSED" ;;
     1) message="FAILED" ;;
   esac
-  echo -ne " - checking pillar file ${pillar}... ${message}\n"
+  echo -ne " - checking pillar file: ${pillar}... ${message}\n"
   status_list+=(${check})
 done
 
