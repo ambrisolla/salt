@@ -31,7 +31,7 @@ yaml=$( cat $pillar )
 check=$( echo $yaml | yq > /dev/null 2> /dev/null ; echo $? )
   case "${check}" in
     0) message="PASSED"; success=true  ;;
-    1) message="FAILED"; success=false ;;
+    *) message="FAILED"; success=false ;;
   esac
   echo -ne " - checking pillar file: ${pillar}... ${message}\n"
   status_list+=(${success})
@@ -40,7 +40,7 @@ done
 if [[ "${status_list[*]}"  =~ "false" ]]
 then
   echo -ne "\n - Error: Failed to check Salt Pillars and Salt States !"
-  #rm -rf ${PILLAR_DIR} ${STATES_DIR}
+  rm -rf ${PILLAR_DIR} ${STATES_DIR}
   exit 1
 else
   echo -ne "\n - Success: Salt Pillar and Salt States check completed!"
