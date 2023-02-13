@@ -3,7 +3,8 @@
 
 LOG_FILE="/tmp/$(echo $0 | awk -F'/' '{print $NF}')-error.log"
 
-echo "=== ${TEST_STATES_DIR} ==="
+env
+exit
 STATES=$( 
   find ${TEST_STATES_DIR} -name "*.sls" | \
   egrep -v "top.sls$|\/reactor\/|\/win/\repo-ng\/" | \
