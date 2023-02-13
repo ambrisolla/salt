@@ -21,7 +21,7 @@ do
     true)  message="PASSED" ;;
     false) message="FAILED" ;;
   esac
-  echo -ne " - checking state ${state}... ${message}"
+  echo -ne " - checking state ${state}... ${message}\n"
   status_list+=(${check})
 done
 
@@ -30,12 +30,14 @@ done
 PILLARS=$( find ${PILLAR_DIR} -name "*.sls" )
 for pillar in ${PILLARS[@]}
 do
-check=$( cat $pillar | yq > /dev/null 2> /dev/null ; echo $?  )
+yaml=$( cat $pillar )
+check=$(echo $yaml | yq > /dev/null 2> /dev/null ; echo $? )
+
   case "${check}" in
     0)  message="PASSED" ;;
     1) message="FAILED" ;;
   esac
-  echo -ne " - checking pillar file ${pillar}... ${message}"
+  echo -ne " - checking pillar file ${pillar}... ${message}\n"
   status_list+=(${check})
 done
 
