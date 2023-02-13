@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-LOG_FILE="/tmp/$0-error.log"
+LOG_FILE="/tmp/$(echo $0 | awk -F'/' '{print $NF}')-error.log"
 
 STATES=$( 
   find ${TEST_STATES_DIR} -name "*.sls" | \
