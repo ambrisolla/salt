@@ -9,7 +9,7 @@ on:
 env:
   STATES_DIR: /srv/validate_salt
   SALT_ENV: validate
-  PILLAR_DIR: /srv/validate_pillar
+  PILLAR_DIR: /srv/pillar/validate_pillar
 
 jobs:
   validate:
