@@ -28,11 +28,10 @@ PILLARS=$( find ${PILLAR_DIR} -name "*.sls" )
 for pillar in ${PILLARS[@]}
 do
 yaml=$( cat $pillar )
-check=$(echo $yaml | yq > /dev/null 2> /dev/null ; echo $? )
-
+check=$( echo $yaml | yq > /dev/null 2> /dev/null ; echo $? )
   case "${check}" in
     0)  message="PASSED" ;;
-    1) message="FAILED" ;;
+    *) message="FAILED" ;;
   esac
   echo -ne " - checking pillar file: ${pillar}... ${message}\n"
   status_list+=(${check})
@@ -40,7 +39,7 @@ done
 
 if [[ "${status_list[*]}"  =~ "false" ]]
 then
-  echo -ne "\n - Error: Failed to check states!"
+  echo -ne "\n - Error: Failed to check Salt Pillars and Salt States !"
   rm -rf ${PILLAR_DIR} ${STATES_DIR}
   exit 1
 else
