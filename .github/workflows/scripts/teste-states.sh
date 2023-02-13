@@ -1,17 +1,14 @@
 #!/bin/bash
-#set -e
 
-STATES_DIR="/srv/salt"
-PILLAR_DIR="/srv/pillar"
-LOG_FILE="teste-states.log"
+
+LOG_FILE="/tmp/$0-error.log"
 
 STATES=$( 
-  find ${STATES_DIR} -name "*.sls" | \
+  find ${TEST_STATES_DIR} -name "*.sls" | \
   egrep -v "top.sls$|\/reactor\/|\/win/\repo-ng\/" | \
   sed "s/\/init.sls//g;s/.sls//g" | \
-  sed "s@$STATES_DIR\/@@g" | \
+  sed "s@${TEST_STATES_DIR}\/@@g" | \
   sed "s/\//./g" )
-
 
 for state in ${STATES[@]}
 do

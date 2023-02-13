@@ -7,14 +7,27 @@ on:
       branches:
         - main
         - develop
+env:
+  TEST_STATES_DIR: /srv/test
+
 jobs:
-  if_merged:
-    name: Teste job
+  test:
+    name: 
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     if: github.event.pull_request.merged == true
-    steps:      
+    steps:     
       - uses: actions/checkout@v3
-      - name: Teste
-        run : ls -l
+
+      - name: Install requirements
+        run : |
+          yum install -y epel-release && \
+          yum install -y jq rsync
+
+      - name: Create "test" environment
+        run: |
+          set -e
+          mkdir -p $TEST_STATES_DIR
+          rm -rf ${TEST_STATES_DIR}/*
+          rsync -av salt/* ${TEST_STATES_DIR}/ --delete
