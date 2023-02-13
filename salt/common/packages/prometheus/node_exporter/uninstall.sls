@@ -1,4 +1,4 @@
-{% from "common/packages/prometheus/node_exporterS/map.jinja" import node_exporter with context %}
+{% from "common/packages/prometheus/node_exporter/map.jinja" import node_exporter with context %}
 {% set install_path = node_exporter['install_path'] %}
 
 stop service:
