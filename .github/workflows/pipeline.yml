@@ -35,4 +35,4 @@ jobs:
       
       - name: Check Salt States
         run: |
-          .github/workflows/scripts/teste-states.sh
+          sudo .github/workflows/scripts/teste-states.sh
