@@ -7,8 +7,9 @@ on:
         - main
         - develop
 env:
-  TEST_STATES_DIR: /srv/test
+  TEST_STATES_DIR: /srv/test_salt
   TEST_SALT_ENV: test
+  TEST_PILLAR_DIR: /srv/test_pillar
 
 jobs:
   validate:
@@ -16,7 +17,6 @@ jobs:
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    #if: github.event.pull_request.merged == true
     steps:     
       - uses: actions/checkout@v3
 
@@ -32,9 +32,9 @@ jobs:
           sudo rm -rf ${TEST_STATES_DIR}/*
           sudo rsync -av salt/* ${TEST_STATES_DIR}/ --delete
       
-      - name: Check Salt States
+      - name: Check Salt States ans Salt Pillar
         run: |
-          sudo .github/workflows/scripts/validate.sh ${TEST_STATES_DIR} ${TEST_SALT_ENV}
+          sudo .github/workflows/scripts/validate.sh ${TEST_STATES_DIR} ${TEST_PILLAR_DIR} ${TEST_SALT_ENV}
 
       - name: Remove "test" environment
         run: sudo rm -rf ${TEST_STATES_DIR}
