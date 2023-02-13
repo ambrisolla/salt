@@ -31,7 +31,7 @@ yaml=$( cat $pillar )
 check=$( echo $yaml | yq > /dev/null 2> /dev/null ; echo $? )
   case "${check}" in
     0) message="PASSED"; success=true  ;;
-    *) message="FAILED"; success=false ;;
+    1) message="FAILED"; success=false ;;
   esac
   echo -ne " - checking pillar file: ${pillar}... ${message}\n"
   status_list+=(${success})
