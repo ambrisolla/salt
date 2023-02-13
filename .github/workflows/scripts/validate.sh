@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -o
 
 STATES_DIR=$1
 PILLAR_DIR=$2
@@ -17,13 +17,13 @@ STATES=$(
   sed "s/\//./g" )
 for state in ${STATES[@]}
 do
-  test=$( salt-call state.sls_exists ${state} saltenv=${SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
-  case "${test}" in
+  check=$( salt-call state.sls_exists ${state} saltenv=${SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
+  case "${check}" in
     true)  message="PASSED" ;;
     false) message="FAILED" ;;
   esac
-  echo -ne " - checking state ${state}... ${message}\n\n"
-  status_list+=(${test})
+  echo -ne " - checking state ${state}... ${message}"
+  status_list+=(${check})
 done
 
 ## Pillars
@@ -31,13 +31,13 @@ done
 PILLARS=$( find ${PILLAR_DIR} -name "*.sls" )
 for pillar in ${PILLARS[@]}
 do
-test=$( cat $pillar | yq > /dev/null 2> /dev/null ; echo $?  )
-  case "${test}" in
+check=$( cat $pillar | yq > /dev/null 2> /dev/null ; echo $?  )
+  case "${check}" in
     0)  message="PASSED" ;;
     1) message="FAILED" ;;
   esac
-  echo -ne " - checking pillar file ${pillar}... ${message}\n"
-  status_list+=(${test})
+  echo -ne " - checking pillar file ${pillar}... ${message}"
+  status_list+=(${check})
 done
 
 if [[ "${status_list[*]}"  =~ "false" ]]
