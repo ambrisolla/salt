@@ -29,10 +29,10 @@ jobs:
       - name: Create "test" environment
         run: |
           set -e
-          sudo mkdir -p $TEST_STATES_DIR
+          sudo mkdir -p ${TEST_STATES_DIR}
           sudo rm -rf ${TEST_STATES_DIR}/*
           sudo rsync -av salt/* ${TEST_STATES_DIR}/ --delete
       
       - name: Check Salt States
         run: |
-          sudo .github/workflows/scripts/teste-states.sh
+          sudo .github/workflows/scripts/teste-states.sh ${TEST_STATES_DIR} ${TEST_SALT_ENV}

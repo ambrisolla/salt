@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+TEST_STATES_DIR=$1
+TEST_SALT_ENV=$2
 LOG_FILE="/tmp/$(echo $0 | awk -F'/' '{print $NF}')-error.log"
 
 env
