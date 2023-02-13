@@ -18,7 +18,7 @@ jobs:
         run: sudo rsync -av salt/* /srv/salt/ --delete
       
       - name: Deploy Salt Pillars
-        run: sudo rsync -av pillars/* /srv/pillars/ --delete
+        run: sudo rsync -av pillar/* /srv/pillar/ --delete
 
       - name: Sync Salt resources
         run : sudo salt "*" saltutil.sync_all --async
