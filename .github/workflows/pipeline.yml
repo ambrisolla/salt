@@ -35,5 +35,4 @@ jobs:
       
       - name: Check Salt States
         run: |
-          pwd
-          ls -lR
+          .github/workflows/scripts/teste-states.sh
