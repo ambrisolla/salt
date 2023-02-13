@@ -1,23 +1,23 @@
 #!/bin/bash
 
 
-TEST_STATES_DIR=$1
-TEST_PILLAR_DIR=$2
-TEST_SALT_ENV=$3
+STATES_DIR=$1
+PILLAR_DIR=$2
+SALT_ENV=$3
 
 
 LOG_FILE="/tmp/$(echo $0 | awk -F'/' '{print $NF}')-error.log"
 
 # States
 STATES=$( 
-  find ${TEST_STATES_DIR} -name "*.sls" | \
+  find ${STATES_DIR} -name "*.sls" | \
   egrep -v "top.sls$|\/reactor\/|\/win/\repo-ng\/" | \
   sed "s/\/init.sls//g;s/.sls//g" | \
-  sed "s@${TEST_STATES_DIR}\/@@g" | \
+  sed "s@${STATES_DIR}\/@@g" | \
   sed "s/\//./g" )
 for state in ${STATES[@]}
 do
-  test=$( salt-call state.sls_exists ${state} saltenv=${TEST_SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
+  test=$( salt-call state.sls_exists ${state} saltenv=${SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
   case "${test}" in
     true)  message="PASSED" ;;
     false) message="FAILED" ;;
@@ -27,10 +27,10 @@ do
 done
 
 # Pillars
-PILLARS=$( find ${TEST_PILLAR_DIR} -name "*.sls" | sed "s@${TEST_PILLAR_DIR}/@@g" )
+PILLARS=$( find ${PILLAR_DIR} -name "*.sls" | sed "s@${PILLAR_DIR}/@@g" )
 for pillar in ${PILLARS[@]}
 do
-test=$( salt-call pillar.file_exists ${pillar} saltenv=${TEST_SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
+test=$( salt-call pillar.file_exists ${pillar} saltenv=${SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
   case "${test}" in
     true)  message="PASSED" ;;
     false) message="FAILED" ;;
@@ -42,7 +42,7 @@ done
 if [[ "${status_list[*]}"  =~ "false" ]]
 then
   echo -ne "\n - Error: Failed to check states!"
-  #rm -rf ${TEST_PILLAR_DIR} ${TEST_STATES_DIR}
+  rm -rf ${PILLAR_DIR} ${STATES_DIR}
   exit 1
 else
   echo -ne "\n - Success: States check completed!"
