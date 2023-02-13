@@ -28,13 +28,14 @@ jobs:
       - name: Create "test" environment
         run: |
           set -e
-          sudo mkdir -p ${TEST_STATES_DIR}
-          sudo rm -rf ${TEST_STATES_DIR}/*
+          sudo rm -rf ${TEST_STATES_DIR}/* ${TEST_PILLAR_DIR}/*
+          sudo mkdir -p ${TEST_STATES_DIR} ${TEST_PILLAR_DIR}
           sudo rsync -av salt/* ${TEST_STATES_DIR}/ --delete
+          sudo rsync -av pillar/* ${TEST_PILLAR_DIR}/ --delete
       
       - name: Check Salt States ans Salt Pillar
         run: |
           sudo .github/workflows/scripts/validate.sh ${TEST_STATES_DIR} ${TEST_PILLAR_DIR} ${TEST_SALT_ENV}
 
       - name: Remove "test" environment
-        run: sudo rm -rf ${TEST_STATES_DIR}
+        run: sudo rm -rf ${TEST_STATES_DIR} ${TEST_PILLAR_DIR}
