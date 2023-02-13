@@ -40,7 +40,7 @@ done
 if [[ "${status_list[*]}"  =~ "false" ]]
 then
   echo -ne "\n - Error: Failed to check Salt Pillars and Salt States !"
-  rm -rf ${PILLAR_DIR} ${STATES_DIR}
+  #rm -rf ${PILLAR_DIR} ${STATES_DIR}
   exit 1
 else
   echo -ne "\n - Success: Salt Pillar and Salt States check completed!"
