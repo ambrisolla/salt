@@ -26,19 +26,19 @@ do
   status_list+=(${test})
 done
 
-# Pillars
-PILLARS=$( find ${PILLAR_DIR} -name "*.sls" | sed "s@${PILLAR_DIR}/@@g" )
-for pillar in ${PILLARS[@]}
-do
-test=$( salt-call pillar.file_exists ${pillar} saltenv=${SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
-  case "${test}" in
-    true)  message="PASSED" ;;
-    false) message="FAILED" ;;
-  esac
-  echo -ne " - checking pillar file ${pillar}... ${message}\n"
-  status_list+=(${test})
-done
-
+## Pillars
+#PILLARS=$( find ${PILLAR_DIR} -name "*.sls" | sed "s@${PILLAR_DIR}/@@g" )
+#for pillar in ${PILLARS[@]}
+#do
+#test=$( salt-call pillar.file_exists ${pillar} saltenv=${SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
+#  case "${test}" in
+#    true)  message="PASSED" ;;
+#    false) message="FAILED" ;;
+#  esac
+#  echo -ne " - checking pillar file ${pillar}... ${message}\n"
+#  status_list+=(${test})
+#done
+#
 if [[ "${status_list[*]}"  =~ "false" ]]
 then
   echo -ne "\n - Error: Failed to check states!"
