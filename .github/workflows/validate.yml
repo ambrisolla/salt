@@ -24,7 +24,7 @@ jobs:
         run : |
           sudo yum install -y epel-release
           sudo yum install -y jq rsync snapd
-          if [[ ! $(snap list yqs 2> /dev/null) ]]
+          if [[ ! $(snap list yq 2> /dev/null) ]]
           then
             sudo systemctl enable --now snapd.socket
             sudo ln -s /var/lib/snapd/snap /snap
