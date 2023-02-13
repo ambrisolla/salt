@@ -18,9 +18,11 @@ jobs:
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     if: github.event.pull_request.merged == true
     steps:     
-      #- uses: actions/checkout@v3
       - name: Deploy Salt States
-        run: rsync -av salt/* /srv/salt/ --delete
+        run: sudo rsync -av salt/* /srv/salt/ --delete
       
       - name: Deploy Salt Pillars
-        run: rsync -av pillars/* /srv/pillars/ --delete
+        run: sudo rsync -av pillars/* /srv/pillars/ --delete
+
+      - name: Sync Salt resources
+        run : sudo salt "*" saltutil.sync_all --async
