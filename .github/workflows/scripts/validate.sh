@@ -1,33 +1,48 @@
 #!/bin/bash
 
-
-TEST_STATES_DIR=$1
-TEST_SALT_ENV=$2
+STATES_DIR=$1
+PILLAR_DIR=$2
+SALT_ENV=$3
 LOG_FILE="/tmp/$(echo $0 | awk -F'/' '{print $NF}')-error.log"
 
+# States
 STATES=$( 
-  find ${TEST_STATES_DIR} -name "*.sls" | \
+  find ${STATES_DIR} -name "*.sls" | \
   egrep -v "top.sls$|\/reactor\/|\/win/\repo-ng\/" | \
   sed "s/\/init.sls//g;s/.sls//g" | \
-  sed "s@${TEST_STATES_DIR}\/@@g" | \
+  sed "s@${STATES_DIR}\/@@g" | \
   sed "s/\//./g" )
-
 for state in ${STATES[@]}
 do
-  #echo -ne " - checking state ${state}... \r"  
-  test=$( salt-call state.sls_exists ${state} saltenv=${TEST_SALT_ENV} --out=json 2> ${LOG_FILE} | jq -r '.local' )
-  case "${test}" in
+  check=$( salt-call state.sls_exists ${state} saltenv=${SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
+  case "${check}" in
     true)  message="PASSED" ;;
     false) message="FAILED" ;;
   esac
-  echo -ne " - checking state ${state}... ${message}\n"
-  status_list+=(${test})
+  echo -ne " - checking state: ${state}... ${message}\n"
+  status_list+=(${check})
+done
+
+## Pillars
+PILLARS=$( find ${PILLAR_DIR} -name "*.sls" )
+for pillar in ${PILLARS[@]}
+do
+yaml=$( cat $pillar )
+check=$(echo $yaml | yq > /dev/null 2> /dev/null ; echo $? )
+
+  case "${check}" in
+    0)  message="PASSED" ;;
+    1) message="FAILED" ;;
+  esac
+  echo -ne " - checking pillar file: ${pillar}... ${message}\n"
+  status_list+=(${check})
 done
 
 if [[ "${status_list[*]}"  =~ "false" ]]
 then
   echo -ne "\n - Error: Failed to check states!"
+  rm -rf ${PILLAR_DIR} ${STATES_DIR}
   exit 1
 else
-  echo -ne "\n - Success: States check completed!"
+  echo -ne "\n - Success: Salt Pillar and Salt States check completed!"
 fi

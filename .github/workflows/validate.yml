@@ -7,8 +7,9 @@ on:
         - main
         - develop
 env:
-  TEST_STATES_DIR: /srv/test
-  TEST_SALT_ENV: test
+  STATES_DIR: /srv/validate_salt
+  SALT_ENV: validate
+  PILLAR_DIR: /srv/validate_pillar
 
 jobs:
   validate:
@@ -16,25 +17,31 @@ jobs:
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    #if: github.event.pull_request.merged == true
     steps:     
       - uses: actions/checkout@v3
 
       - name: Install requirements
         run : |
-          sudo yum install -y epel-release && \
-          sudo yum install -y jq rsync
+          sudo yum install -y epel-release
+          sudo yum install -y jq rsync snapd
+          if [[ ! $(snap list yq 2> /dev/null) ]]
+          then
+            sudo systemctl enable --now snapd.socket
+            sudo ln -s /var/lib/snapd/snap /snap
+            sudo snap install yq
+          fi
 
       - name: Create "test" environment
         run: |
           set -e
-          sudo mkdir -p ${TEST_STATES_DIR}
-          sudo rm -rf ${TEST_STATES_DIR}/*
-          sudo rsync -av salt/* ${TEST_STATES_DIR}/ --delete
+          sudo rm -rf ${STATES_DIR}/* ${PILLAR_DIR}/*
+          sudo mkdir -p ${STATES_DIR} ${PILLAR_DIR}
+          sudo rsync -av salt/* ${STATES_DIR}/ --delete
+          sudo rsync -av pillar/* ${PILLAR_DIR}/ --delete
       
-      - name: Check Salt States
+      - name: Check Salt Pillars and Salt States
         run: |
-          sudo .github/workflows/scripts/validate.sh ${TEST_STATES_DIR} ${TEST_SALT_ENV}
+          sudo .github/workflows/scripts/validate.sh ${STATES_DIR} ${PILLAR_DIR} ${SALT_ENV}
 
       - name: Remove "test" environment
-        run: sudo rm -rf ${TEST_STATES_DIR}
+        run: sudo rm -rf ${STATES_DIR} ${PILLAR_DIR}
