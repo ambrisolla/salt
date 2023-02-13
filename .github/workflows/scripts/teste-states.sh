@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+env
+exit
 LOG_FILE="/tmp/$0-error.log"
 
 STATES=$( 
