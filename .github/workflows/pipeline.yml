@@ -22,12 +22,12 @@ jobs:
 
       - name: Install requirements
         run : |
-          yum install -y epel-release && \
-          yum install -y jq rsync
+          sudo yum install -y epel-release && \
+          sudo yum install -y jq rsync
 
       - name: Create "test" environment
         run: |
           set -e
-          mkdir -p $TEST_STATES_DIR
-          rm -rf ${TEST_STATES_DIR}/*
-          rsync -av salt/* ${TEST_STATES_DIR}/ --delete
+          sudo mkdir -p $TEST_STATES_DIR
+          sudo rm -rf ${TEST_STATES_DIR}/*
+          sudo rsync -av salt/* ${TEST_STATES_DIR}/ --delete
