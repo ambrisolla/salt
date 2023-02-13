@@ -27,7 +27,7 @@ do
 done
 
 # Pillars
-PILLARS=$( find ${TEST_PILLAR_DIR} -name "*.sls" | sed "s@${TEST_PILLAR_DIR}@@g" )
+PILLARS=$( find ${TEST_PILLAR_DIR} -name "*.sls" | sed "s@${TEST_PILLAR_DIR}/@@g" )
 for pillar in ${PILLARS[@]}
 do
 test=$( salt-call pillar.file_exists ${pillar} saltenv=${TEST_SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
