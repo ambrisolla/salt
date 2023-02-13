@@ -1,5 +1,4 @@
 #!/bin/bash
-set -o
 
 STATES_DIR=$1
 PILLAR_DIR=$2
