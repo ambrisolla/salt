@@ -25,3 +25,7 @@ jobs:
       - name: Sync Salt resources
         run : |
           sudo salt "*" saltutil.sync_all --async
+      
+      - name: Run Highstate on Master
+        run: | 
+          sudo salt-call state.highstate --async
