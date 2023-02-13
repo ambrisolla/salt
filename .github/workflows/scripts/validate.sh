@@ -30,11 +30,11 @@ do
 yaml=$( cat $pillar )
 check=$( echo $yaml | yq > /dev/null 2> /dev/null ; echo $? )
   case "${check}" in
-    0)  message="PASSED" ;;
-    *) message="FAILED" ;;
+    0) message="PASSED"; success=true  ;;
+    *) message="FAILED"; success=false ;;
   esac
   echo -ne " - checking pillar file: ${pillar}... ${message}\n"
-  status_list+=(${check})
+  status_list+=(${success})
 done
 
 if [[ "${status_list[*]}"  =~ "false" ]]
