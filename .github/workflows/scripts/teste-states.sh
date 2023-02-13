@@ -1,8 +1,6 @@
 #!/bin/bash
 
 
-env
-exit
 LOG_FILE="/tmp/$0-error.log"
 
 STATES=$( 
@@ -15,7 +13,7 @@ STATES=$(
 for state in ${STATES[@]}
 do
   echo -ne " - checking state ${state}... \r"
-  test=$( salt-call state.sls_exists ${state} --out=json 2> ${LOG_FILE} | jq -r '.local' )
+  test=$( salt-call state.sls_exists ${state} saltenv=${TEST_SALT_ENV} --out=json 2> ${LOG_FILE} | jq -r '.local' )
   case "${test}" in
     true)  message="PASSED" ;;
     false) message="FAILED" ;;
