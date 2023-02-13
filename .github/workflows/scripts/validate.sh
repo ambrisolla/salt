@@ -42,7 +42,7 @@ done
 if [[ "${status_list[*]}"  =~ "false" ]]
 then
   echo -ne "\n - Error: Failed to check states!"
-  rm -rf ${TEST_PILLAR_DIR} ${TEST_STATES_DIR}
+  #rm -rf ${TEST_PILLAR_DIR} ${TEST_STATES_DIR}
   exit 1
 else
   echo -ne "\n - Success: States check completed!"
