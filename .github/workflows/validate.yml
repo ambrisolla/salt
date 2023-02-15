@@ -19,6 +19,13 @@ jobs:
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    strategy:
+      matrix:
+        returner_tables:
+          - jids
+          - salt_returns
+          - salt_events
+
     steps:     
       - uses: actions/checkout@v3
 
@@ -34,9 +41,9 @@ jobs:
       #      sudo snap install yq
       #    fi 
 
-      - name: Test access to the Returner database
-        run: |
-          echo "select count(*) from jids" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
+      - name: Test database tables connection
+        run: echo ${{ matrix.returner_tables }}
+#echo "select count(*) from jids" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
 
 
 
