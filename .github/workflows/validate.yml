@@ -10,11 +10,8 @@ env:
   STATES_DIR: /srv/validate_salt
   SALT_ENV: validate
   PILLAR_DIR: /srv/validate_pillar
-  #PGHOST: 192.168.0.113
   PGPASSWORD: ${{ secrets.PGPASSWORD }}
-  #PGDATABASE: postgres
-  #PGUSER: postgres
-  #PGPORT: 5432
+  
 jobs:
   validate:
     name: Validate Salt States and Salt Pillars
@@ -39,9 +36,7 @@ jobs:
 
       - name: Test access to the Returner database
         run: |
-          echo "->${{ vars.PGPORT }}"
-          echo "=>${{ env.PGPORT }}"
-    ## echo "select count(*) from jids" | psql -h ${PGHOST} -p ${PGPORT} -U ${PGUSER}
+          echo "select count(*) from jids" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
 
 
 
