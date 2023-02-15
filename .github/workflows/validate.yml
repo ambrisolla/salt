@@ -36,7 +36,7 @@ jobs:
       #      sudo systemctl enable snapd
       #      sudo systemctl start snapd
       #      sudo snap install yq
-      #    fi
+      #    fi 
 
       - name: Test access to the Returner database
         run: echo "${{ secrets.PGPASSWORD }}" > /tmp/abb
