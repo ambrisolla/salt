@@ -14,16 +14,13 @@ env:
   PGDATABASE: postgres
   PGUSER: postgres
   PGPORT: 5432
-  ENVIRON: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-
-
 jobs:
   validate:
     name: Validate Salt States and Salt Pillars
-    environment: ${ ENVIRON }
+    environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     runs-on: 
       - salt
-      - ${ ENVIRON }
+      - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     steps:     
       - uses: actions/checkout@v3
 
