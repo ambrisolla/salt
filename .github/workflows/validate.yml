@@ -8,9 +8,10 @@ on: push
   ##      - develop
 env:
   STATES_DIR: /srv/validate_salt
-  SALT_ENV: validate
+  SALT_ENV:   validate
   PILLAR_DIR: /srv/validate_pillar
   PGPASSWORD: ${{ secrets.PGPASSWORD }}
+  PGTABLES:   jids salt_returns salt_events
   
 jobs:
   validate:
@@ -42,7 +43,8 @@ jobs:
       #    fi 
 
       - name: Test database tables connection
-        run: echo ${{ matrix.returner_tables }}
+        run: echo ${ PGTABLES }
+
 #echo "select count(*) from jids" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
 
 
