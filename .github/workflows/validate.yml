@@ -29,7 +29,11 @@ jobs:
     steps:
       - name: Test table ${{ matrix.returner_tables }}
         run: |
-          echo "select count(*) from ${{ matrix.returner_tables }}" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
+          psql \
+            -h ${{ vars.PGHOST }} \
+            -p ${{ vars.PGPORT }} \
+            -U ${{ vars.PGUSER }} \
+            -c "select count(*) from ${{ matrix.returner_tables }}"
 
     
   test_states_and_pillars:
