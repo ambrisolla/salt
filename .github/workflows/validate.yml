@@ -36,7 +36,7 @@ jobs:
             -h ${{ vars.PGHOST }} \
             -p ${{ vars.PGPORT }} \
             -U ${{ vars.PGUSER }} \
-            -c "select count(*) from ${{ matrix.returner_tables }}"W    
+            -c "select count(*) from ${{ matrix.returner_tables }}"    
   test_states_and_pillars:
     name: Test Salt States and Salt Pillars
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
