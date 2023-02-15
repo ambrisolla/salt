@@ -11,24 +11,40 @@ env:
   SALT_ENV:   validate
   PILLAR_DIR: /srv/validate_pillar
   PGPASSWORD: ${{ secrets.PGPASSWORD }}
-  PGTABLES: (jids salt_returns salt_events)
+  PGTABLES: "jids salt_returns salt_events"
   
 jobs:
-  validate:
-    name: Validate Salt States and Salt Pillars
+  test_database_tables:
+    name: Test access to Returners database and tables
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    #strategy:
-    #  matrix:
-    #    returner_tables:
-    #      - jids
-    #      - salt_returns
-    #      - salt_events
+    strategy:
+      matrix:
+        returner_tables:
+          - jids
+          - salt_returns
+          - salt_events
+    steps:
+      - name: Test table ${{ matrix.returner_tables }}
+        run: |
+          echo "select count(*) from ${{ matrix.returner_tables }}" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
 
+    
+  test_states_and_pillars:
+    name: Test Salt States and Salt Pillars
+    environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    runs-on: 
+      - salt
+      - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     steps:     
       - uses: actions/checkout@v3
+
+      - name: teste
+        run : |
+          echo "OK"
+
 
       #- name: Install requirements
       #  run : |
@@ -42,12 +58,7 @@ jobs:
       #      sudo snap install yq
       #    fi 
 
-      - name: Test database tables connection
-        run: |
-          echo ${#PGTABLES[@]}
-
-#echo "select count(*) from jids" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
-
+      
 
 
       #- name: Create "validate" environment
