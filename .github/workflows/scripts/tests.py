@@ -52,6 +52,7 @@ def test_salt(**kwargs):
 def test_states(kwargs):
   try:
     states_dir = kwargs['states_dir']
+    salt_env = kwargs['salt_env']
     sls_files = [ x for x in os.walk(states_dir) ]
     states = []
     for root,dir,filenames in sls_files:
@@ -62,7 +63,7 @@ def test_states(kwargs):
           if state != 'top':
             states.append(state)
     for state in states:
-      cmd = sb.run(f'salt-call state.sls_exists {state} --out=json', 
+      cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
         shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
       print(cmd.stdout)
   except Exception as err:
