@@ -13,38 +13,17 @@ env:
   PGPASSWORD: ${{ secrets.PGPASSWORD }}
   PGTABLES: "jids salt_returns salt_events"
 jobs:
-  test_database_tables:
-    name: Test Returners database connection
+  requirements:
+    name: Install Pipeline dependencies
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    strategy:
-      matrix:
-        returner_tables:
-          - jids
-          - salt_returns
-          - salt_events
     steps:
       - name: Install PostgreSQL requirements
         run: |
           sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
           sudo yum install -y postgresql
-      - name: Test table ${{ matrix.returner_tables }}
-        run: |
-          psql \
-            -h ${{ vars.PGHOST }} \
-            -p ${{ vars.PGPORT }} \
-            -U ${{ vars.PGUSER }} \
-            -c "select count(*) from ${{ matrix.returner_tables }}"    
-  test_states_and_pillars:
-    name: Test Salt States and Salt Pillars
-    environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    runs-on: 
-      - salt
-      - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    steps:     
-      - uses: actions/checkout@v3
 
       - name: Enable EPEL Release
         run: |
@@ -60,7 +39,36 @@ jobs:
             sudo systemctl start snapd
             sudo snap install yq
           fi 
-
+  test_database_tables:
+    needs: requirements
+    name: Test Returners database connection
+    environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    runs-on: 
+      - salt
+      - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    strategy:
+      matrix:
+        returner_tables:
+          - jids
+          - salt_returns
+          - salt_events
+    steps:
+      - name: Test table ${{ matrix.returner_tables }}
+        run: |
+          psql \
+            -h ${{ vars.PGHOST }} \
+            -p ${{ vars.PGPORT }} \
+            -U ${{ vars.PGUSER }} \
+            -c "select count(*) from ${{ matrix.returner_tables }}"    
+  test_states_and_pillars:
+    needs: requirements
+    name: Test Salt States and Salt Pillars
+    environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    runs-on: 
+      - salt
+      - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    steps:     
+      - uses: actions/checkout@v3
       - name: Create temporary environment to test States and Pillars
         run: |
           set -e
