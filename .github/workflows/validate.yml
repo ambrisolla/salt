@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         returner_tables:
-          - jidsd
+          - jids
           - salt_returns
           - salt_events
     steps:
