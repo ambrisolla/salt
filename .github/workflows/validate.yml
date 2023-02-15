@@ -11,7 +11,7 @@ env:
   SALT_ENV:   validate
   PILLAR_DIR: /srv/validate_pillar
   PGPASSWORD: ${{ secrets.PGPASSWORD }}
-  PGTABLES: "jids salt_returns salt_events"
+  PGTABLES: (jids salt_returns salt_events)
   
 jobs:
   validate:
@@ -44,7 +44,7 @@ jobs:
 
       - name: Test database tables connection
         run: |
-          echo ${PGTABLES}
+          echo ${#PGTABLES[@]}
 
 #echo "select count(*) from jids" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
 
