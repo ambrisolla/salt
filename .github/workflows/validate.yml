@@ -39,7 +39,6 @@ jobs:
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     steps:
       - uses: actions/checkout@v3
-
       - name: Create temporary environment
         run: |
           set -e
@@ -58,13 +57,13 @@ jobs:
       - name: Create temporary environment to test States and Pillars
         run: |
           set -e
-          sudo rm -rf ${STATES_DIR}/* ${PILLAR_DIR}/*
-          sudo mkdir -p ${STATES_DIR} ${PILLAR_DIR}
-          sudo rsync -av salt/* ${STATES_DIR}/ --delete
-          sudo rsync -av pillar/* ${PILLAR_DIR}/ --delete
+          sudo rm -rf ${TEMP_ENVIRON_STATES_DIR}/* ${TEMP_ENVIRON_PILLAR_DIR}/*
+          sudo mkdir -p ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR}
+          sudo rsync -av salt/* ${TEMP_ENVIRON_STATES_DIR}/ --delete
+          sudo rsync -av pillar/* ${TEMP_ENVIRON_PILLAR_DIR}/ --delete
       - name: Check Salt Pillars and Salt States
         run: |
-          sudo .github/workflows/scripts/validate.sh ${STATES_DIR} ${PILLAR_DIR} ${SALT_ENV}
+          sudo .github/workflows/scripts/validate.sh ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR} ${SALT_ENV}
         shell: bash
-      - name: Remove temporary environment
-        run: sudo rm -rf ${STATES_DIR} ${PILLAR_DIR}
+      #- name: Remove temporary environment
+      #  run: sudo rm -rf ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR}
