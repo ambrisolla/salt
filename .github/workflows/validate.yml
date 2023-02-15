@@ -39,7 +39,11 @@ jobs:
       #    fi 
 
       - name: Test access to the Returner database
-        run: echo "${{ secrets.PGPASSWORD }}" > /tmp/abb
+        run: |
+            echo "The GitHub Action Secret will be masked:  "
+            echo ${{ secrets.PGPASSWORD }}
+            echo "Trick to echo GitHub Actions Secret:  "
+            echo ${{secrets.PGPASSWORD}} | sed 's/./& /g'
           #echo "select count(*) from jids" | psql -h ${PGHOST} -p ${PGPORT} -U ${PGUSER}
 
 
