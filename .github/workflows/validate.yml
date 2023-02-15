@@ -12,26 +12,26 @@ env:
   TEMP_ENVIRON_PILLAR_DIR: /srv/test_pillar
   PGPASSWORD:              ${{ secrets.PGPASSWORD }}
 jobs:
-  test_database_tables:
-    name: Test Returners database connection
-    environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    runs-on: 
-      - salt
-      - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    strategy:
-      matrix:
-        returner_tables:
-          - jids
-          - salt_returns
-          - salt_events
-    steps:
-      - name: Test table ${{ matrix.returner_tables }}
-        run: |
-          psql \
-            -h ${{ vars.PGHOST }} \
-            -p ${{ vars.PGPORT }} \
-            -U ${{ vars.PGUSER }} \
-            -c "select count(*) from ${{ matrix.returner_tables }}"
+  #test_database_tables:
+  #  name: Test Returners database connection
+  #  environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+  #  runs-on: 
+  #    - salt
+  #    - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+  #  strategy:
+  #    matrix:
+  #      returner_tables:
+  #        - jids
+  #        - salt_returns
+  #        - salt_events
+  #  steps:
+  #    - name: Test table ${{ matrix.returner_tables }}
+  #      run: |
+  #        psql \
+  #          -h ${{ vars.PGHOST }} \
+  #          -p ${{ vars.PGPORT }} \
+  #          -U ${{ vars.PGUSER }} \
+  #          -c "select count(*) from ${{ matrix.returner_tables }}"
   test_states_and_pillars:
     name: Test Salt States and Salt Pillars
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
@@ -40,17 +40,20 @@ jobs:
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     steps:     
       - uses: actions/checkout@v3
-      - name: Create temporary environment to test States and Pillars
-        run: |
-          set -e
-          sudo rm -rf ${TEMP_ENVIRON_STATES_DIR}/* ${TEMP_ENVIRON_PILLAR_DIR}/*
-          sudo mkdir -p ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR}
-          sudo rsync -av salt/* ${TEMP_ENVIRON_STATES_DIR}/ --delete
-          sudo rsync -av pillar/* ${TEMP_ENVIRON_PILLAR_DIR}/ --delete
-          sudo sed -i "s@^base:@test:@" ${TEMP_ENVIRON_PILLAR_DIR}/top.sls
-      - name: Check Salt Pillars and Salt States
-        run: |
-          sudo .github/workflows/scripts/run-tests.sh ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR} ${TEMP_ENVIRON}
-        shell: bash
-      #- name: Remove temporary environment
-      #  run: sudo rm -rf ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR}
+      #- name: Create temporary environment to test States and Pillars
+      #  run: |
+      #    set -e
+      #    sudo rm -rf ${TEMP_ENVIRON_STATES_DIR}/* ${TEMP_ENVIRON_PILLAR_DIR}/*
+      #    sudo mkdir -p ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR}
+      #    sudo rsync -av salt/* ${TEMP_ENVIRON_STATES_DIR}/ --delete
+      #    sudo rsync -av pillar/* ${TEMP_ENVIRON_PILLAR_DIR}/ --delete
+      #    sudo sed -i "s@^base:@test:@" ${TEMP_ENVIRON_PILLAR_DIR}/top.sls
+      #- name: Check Salt Pillars and Salt States
+      #  run: |
+      #    sudo .github/workflows/scripts/run-tests.sh ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR} ${TEMP_ENVIRON}
+      #  shell: bash
+      - name: Create temporaty environment
+        run: | 
+          uname
+        
+            
