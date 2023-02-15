@@ -15,7 +15,7 @@ env:
   
 jobs:
   test_database_tables:
-    name: Test access to Returners database and tables
+    name: Test Returners database connection
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     runs-on: 
       - salt
@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         returner_tables:
-          - jids
+          - jidsd
           - salt_returns
           - salt_events
     steps:
