@@ -20,6 +20,7 @@ env:
 jobs:
   validate:
     name: Validate Salt States and Salt Pillars
+    environment: salt
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
@@ -43,7 +44,7 @@ jobs:
             echo "The GitHub Action Secret will be masked:  "
             echo ${{ secrets.PGPASSWORD }}
             echo "Trick to echo GitHub Actions Secret:  "
-            echo ${{secrets.PGPASSWORD}} | sed 's/./& /g'
+            echo ${{ secrets.PGPASSWORD }} | sed 's/./& /g'
           #echo "select count(*) from jids" | psql -h ${PGHOST} -p ${PGPORT} -U ${PGUSER}
 
 
