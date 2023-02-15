@@ -43,7 +43,8 @@ jobs:
       #    fi 
 
       - name: Test database tables connection
-        run: echo ${ PGTABLES }
+        run: |
+          env
 
 #echo "select count(*) from jids" | psql -h ${{ vars.PGHOST }} -p ${{ vars.PGPORT }} -U ${{ vars.PGUSER }}
 
