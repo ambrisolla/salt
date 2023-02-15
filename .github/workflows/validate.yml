@@ -11,7 +11,7 @@ env:
   SALT_ENV:   validate
   PILLAR_DIR: /srv/validate_pillar
   PGPASSWORD: ${{ secrets.PGPASSWORD }}
-  PGTABLES:   jids salt_returns salt_events
+  PGTABLES:   "jids salt_returns salt_events"
   
 jobs:
   validate:
@@ -20,12 +20,12 @@ jobs:
     runs-on: 
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    strategy:
-      matrix:
-        returner_tables:
-          - jids
-          - salt_returns
-          - salt_events
+    #strategy:
+    #  matrix:
+    #    returner_tables:
+    #      - jids
+    #      - salt_returns
+    #      - salt_events
 
     steps:     
       - uses: actions/checkout@v3
