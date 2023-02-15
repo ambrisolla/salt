@@ -12,7 +12,6 @@ env:
   PILLAR_DIR: /srv/validate_pillar
   PGPASSWORD: ${{ secrets.PGPASSWORD }}
   PGTABLES: "jids salt_returns salt_events"
-  
 jobs:
   test_database_tables:
     name: Test Returners database connection
@@ -27,15 +26,17 @@ jobs:
           - salt_returns
           - salt_events
     steps:
+      - name: Install PostgreSQL requirements
+        run: |
+          sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+          sudo yum install -y postgresql
       - name: Test table ${{ matrix.returner_tables }}
         run: |
           psql \
             -h ${{ vars.PGHOST }} \
             -p ${{ vars.PGPORT }} \
             -U ${{ vars.PGUSER }} \
-            -c "select count(*) from ${{ matrix.returner_tables }}"
-
-    
+            -c "select count(*) from ${{ matrix.returner_tables }}"W    
   test_states_and_pillars:
     name: Test Salt States and Salt Pillars
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
@@ -45,37 +46,32 @@ jobs:
     steps:     
       - uses: actions/checkout@v3
 
-      - name: teste
+      - name: Enable EPEL Release
+        run: |
+          sudo yum install -y epel-release
+
+      - name: Install requirements
         run : |
-          echo "OK"
+          sudo yum install -y jq rsync snapd python3-psycopg2
+          if [[ ! $(snap list yq 2> /dev/null) ]]
+          then
+            sudo ln -s /var/lib/snapd/snap /snap
+            sudo systemctl enable snapd
+            sudo systemctl start snapd
+            sudo snap install yq
+          fi 
 
-
-      #- name: Install requirements
-      #  run : |
-      #    sudo yum install -y epel-release
-      #    sudo yum install -y jq rsync snapd
-      #    if [[ ! $(snap list yq 2> /dev/null) ]]
-      #    then
-      #      sudo ln -s /var/lib/snapd/snap /snap
-      #      sudo systemctl enable snapd
-      #      sudo systemctl start snapd
-      #      sudo snap install yq
-      #    fi 
-
+      - name: Create temporary environment to test States and Pillars
+        run: |
+          set -e
+          sudo rm -rf ${STATES_DIR}/* ${PILLAR_DIR}/*
+          sudo mkdir -p ${STATES_DIR} ${PILLAR_DIR}
+          sudo rsync -av salt/* ${STATES_DIR}/ --delete
+          sudo rsync -av pillar/* ${PILLAR_DIR}/ --delete
       
+      - name: Check Salt Pillars and Salt States
+        run: |
+          sudo .github/workflows/scripts/validate.sh ${STATES_DIR} ${PILLAR_DIR} ${SALT_ENV}
 
-
-      #- name: Create "validate" environment
-      #  run: |
-      #    set -e
-      #    sudo rm -rf ${STATES_DIR}/* ${PILLAR_DIR}/*
-      #    sudo mkdir -p ${STATES_DIR} ${PILLAR_DIR}
-      #    sudo rsync -av salt/* ${STATES_DIR}/ --delete
-      #    sudo rsync -av pillar/* ${PILLAR_DIR}/ --delete
-      #
-      #- name: Check Salt Pillars and Salt States
-      #  run: |
-      #    sudo .github/workflows/scripts/validate.sh ${STATES_DIR} ${PILLAR_DIR} ${SALT_ENV}
-#
-      #- name: Remove "validade" environment
-      #  run: sudo rm -rf ${STATES_DIR} ${PILLAR_DIR}
+      - name: Remove temporary environment
+        run: sudo rm -rf ${STATES_DIR} ${PILLAR_DIR}
