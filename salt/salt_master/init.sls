@@ -7,8 +7,6 @@ salt_master_files:
         - source: salt://salt_master/files/master.conf
       - /etc/salt/master.d/external_auth.conf:
         - source: salt://salt_master/files/external_auth.conf
-      - /etc/salt/master.d/file_roots.conf:
-        - source: salt://salt_master/files/file_roots.conf
       - /etc/salt/master.d/reactor.conf:
         - source: salt://salt_master/files/reactor.conf
       - /etc/salt/master.d/returners.conf:
