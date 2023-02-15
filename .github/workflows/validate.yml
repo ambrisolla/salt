@@ -47,6 +47,7 @@ jobs:
           sudo mkdir -p ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR}
           sudo rsync -av salt/* ${TEMP_ENVIRON_STATES_DIR}/ --delete
           sudo rsync -av pillar/* ${TEMP_ENVIRON_PILLAR_DIR}/ --delete
+          sudo sed -i "s@^base:@test:@" /srv/${TEMP_ENVIRON_PILLAR_DIR}/top.sls
       - name: Check Salt Pillars and Salt States
         run: |
           sudo .github/workflows/scripts/run-tests.sh ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR} ${TEMP_ENVIRON}
