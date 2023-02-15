@@ -38,8 +38,10 @@ jobs:
       #    fi 
 
       - name: Test access to the Returner database
-        run: env
-          #echo "select count(*) from jids" | psql -h ${PGHOST} -p ${PGPORT} -U ${PGUSER}
+        run: |
+          echo ${{ vars.PGPORT }}
+          echo ${{ env.PGPORT }}
+    ## echo "select count(*) from jids" | psql -h ${PGHOST} -p ${PGPORT} -U ${PGUSER}
 
 
 
