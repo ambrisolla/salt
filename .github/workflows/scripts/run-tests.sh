@@ -1,5 +1,5 @@
 #!/bin/bash
-
+env;exit
 STATES_DIR=$1
 PILLAR_DIR=$2
 SALT_ENV=$3
