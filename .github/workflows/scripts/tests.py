@@ -60,6 +60,8 @@ def test_states(kwargs):
         sls_file = f'{root}/{filename}'.replace(f'{states_dir}/','')
         if re.search('.sls$',sls_file):
           state = sls_file.replace('.sls','').replace('/','.')
+          if re.search('.init$', state):
+            state = re.sub('.init$','',state)
           if state != 'top':
             states.append(state)
     for state in states:
