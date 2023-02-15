@@ -50,7 +50,7 @@ jobs:
       
       - name: Check Salt Pillars and Salt States
         run: |
-          STATES=$( 
+          STATES=$( \
             find ${TEMP_ENVIRON_STATES_DIR} -name "*.sls" | \
             egrep -v "top.sls$|\/reactor\/|\/win/\repo-ng\/" | \
             sed "s/\/init.sls//g;s/.sls//g" | \

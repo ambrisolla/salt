@@ -6,7 +6,7 @@ SALT_ENV=$3
 LOG_FILE="/tmp/$(echo $0 | awk -F'/' '{print $NF}')-error.log"
 
 # States
-STATES=$( 
+STATES=$( \
   find ${STATES_DIR} -name "*.sls" | \
   egrep -v "top.sls$|\/reactor\/|\/win/\repo-ng\/" | \
   sed "s/\/init.sls//g;s/.sls//g" | \
