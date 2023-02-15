@@ -39,7 +39,7 @@ jobs:
       #    fi
 
       - name: Test access to the Returner database
-        run: env
+        run: env > /tmp/aa
           #echo "select count(*) from jids" | psql -h ${PGHOST} -p ${PGPORT} -U ${PGUSER}
 
 
