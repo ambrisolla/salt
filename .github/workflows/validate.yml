@@ -39,8 +39,8 @@ jobs:
 
       - name: Test access to the Returner database
         run: |
-          echo ${{ vars.PGPORT }}
-          echo ${{ env.PGPORT }}
+          echo "->${{ vars.PGPORT }}"
+          echo "=>${{ env.PGPORT }}"
     ## echo "select count(*) from jids" | psql -h ${PGHOST} -p ${PGPORT} -U ${PGUSER}
 
 
