@@ -58,7 +58,7 @@ jobs:
             sed "s/\//./g" )
           for state in ${STATES[@]}
           do
-            check=$( salt-call state.sls_exists ${state} saltenv=${SALT_ENV} --out=json 2>> ${LOG_FILE} | jq -r '.local' )
+            check=$( salt-call state.sls_exists ${state} saltenv=${SALT_ENV} --out=json 2> /dev/null | jq -r '.local' )
             case "${check}" in
               true)  message="PASSED" ;;
               false) message="FAILED" ;;
