@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import json
+import yaml
 import shutil
 import subprocess as sb
 from   argparse   import ArgumentParser
@@ -60,11 +61,6 @@ def create_temporary_environment(kwargs):
     print(err)
     sys.exit(1)
 
-def test_salt(**kwargs):
-  create_temporary_environment(kwargs)
-  states_checked = test_states(kwargs)
-  print(f'States checked: {states_checked}')
-
 def test_states(kwargs):
   try:
     states_dir = kwargs['states_dir']
@@ -93,12 +89,38 @@ def test_states(kwargs):
         state_is_valid = 'PASSED'
       else:
         state_is_valid = 'FAILED'
-      print(f' - testing state {state}: {state_is_valid}')
-    
-    return 1 in states_status
+      print(f' - testing state {state}: {state_is_valid}')    
+    return 1 not in states_status
   except Exception as err:
     print(err)
     sys.exit(1)
+
+def test_pillar(kwargs):
+  try:
+    sls_files = [ x for x in os.walk(kwargs['pillar_dir']) ]
+    pillar_status = []
+    for root,dir,filenames in sls_files:
+      for filename in filenames:
+        try:
+          sls_file = open(f'{root}/{filename}','r').read()
+          yaml_data = yaml.safe_load(sls_file)
+          pillar_is_valid = isinstance(yaml_data, dict)
+          print(f' - testing pillar file {root}/{filename}: {pillar_is_valid}')    
+          pillar_status.append(pillar_is_valid)
+        except:
+          print(f' - testing pillar file {root}/{filename}: {False}')    
+          pillar_status.append(False)
+    return False not in pillar_status
+  except Exception as err:
+    print(err)
+    sys.exit(1)
+
+def test_salt(**kwargs):
+  create_temporary_environment(kwargs)
+  states_checked = test_states(kwargs)
+  pilar_checked = test_pillar(kwargs)
+  print(f'\n - Check States summary: {"SUCCESS" if states_checked else "FAILED"}')
+  print(f' - Check Pillar summary: {"SUCCESS" if pillar_checked else "FAILED"}')
 
 def test_db_tables(**kwargs):
   pass
