@@ -142,12 +142,12 @@ def test_salt(**kwargs):
 
 def test_db_tables(kwargs):
   try:
-    #conn = psycopg2.connect(
-    #  host=kwargs['db_host'],
-    #  database=kwargs['db_name'],
-    #  user=kwargs['db_username'],
-    #  password=kwargs['db_password']
-    #)
+    conn = psycopg2.connect(
+      host=kwargs['db_host'],
+      database=kwargs['db_name'],
+      user=kwargs['db_username'],
+      password=kwargs['db_password']
+    )
     for table in kwargs['db_tables']:    
       cursor = conn.cursor()
       cursor.execute(f'select count(*) from {table}')
