@@ -54,6 +54,9 @@ jobs:
       #  shell: bash
       - name: Create temporaty environment
         run: | 
-          sudo .github/workflows/scripts/tests.py --test-salt --states-dir ${TEMP_ENVIRON_STATES_DIR} --salt-env ${TEMP_ENVIRON} --pillar-dir ${TEMP_ENVIRON_PILLAR_DIR}
+          sudo .github/workflows/scripts/tests.py --test-salt \
+            --states-dir ${TEMP_ENVIRON_STATES_DIR} \
+            --salt-env ${TEMP_ENVIRON} \
+            --pillar-dir ${TEMP_ENVIRON_PILLAR_DIR}
         
             

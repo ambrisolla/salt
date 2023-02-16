@@ -14,6 +14,7 @@ def create_temporary_environment(kwargs):
     # set variables
     states_dir = kwargs['states_dir']
     pillar_dir = kwargs['pillar_dir']
+    salt_env = kwargs['salt_env']
     # create temporary directories, if exists, removes and creates again
     if not re.match('^/srv/[a-z]',states_dir):
       print('Error: States directory needs to be within /srv/ !')
@@ -41,6 +42,16 @@ def create_temporary_environment(kwargs):
       if rsync_pillar.returncode != 0:
         print(f'Error: {sb.stderr}')
         sys.exit(1)
+      '''
+        Replace environment "base" to "{salt_env}" in top.sls file.
+        This is necessary because the environment variable "base" is used 
+        as a main environment in Salt.
+      '''
+      top_sls = open(f'{pillar_dir}/top.sls', 'r').read()
+      top_sls_test = re.sub('^base:',f'{salt_env}:', top_sls)
+      with open(f'{pillar_dir}/top.sls', 'w') as file:
+          file.write(top_sls_test)
+          file.close()
   except Exception as err:
     print(err)
     sys.exit(1)
@@ -60,15 +71,11 @@ def test_states(kwargs):
         sls_file = f'{root}/{filename}'.replace(f'{states_dir}/','')
         if re.search('.sls$',sls_file):
           state = sls_file.replace('.sls','').replace('/','.')
-          if re.search('.init$', state):
-            state = re.sub('.init$','',state)
-            states.append(state)
-          if state != 'top':
-            states.append(state)
+          state = re.sub('.init$','',state)
+          states.append(state)
     for state in states:
-      #cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
-      #shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
-      print(state)
+      cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
+        shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
   except Exception as err:
     print(err)
     sys.exit(1)
