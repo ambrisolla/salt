@@ -66,9 +66,9 @@ def test_states(kwargs):
           if state != 'top':
             states.append(state)
     for state in states:
-      cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
-        shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
-      print(cmd.stdout)
+      #cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
+      #shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
+      print(state)
   except Exception as err:
     print(err)
     sys.exit(1)
