@@ -54,9 +54,8 @@ def create_temporary_environment(kwargs):
       top_sls = open(f'{pillar_dir}/top.sls', 'r').read()
       top_sls_test = re.sub('^base:',f'{salt_env}:', top_sls)
       with open(f'{pillar_dir}/top.sls', 'w') as file:
-          file.write(top_sls_test)
-          file.close()
-
+        file.write(top_sls_test)
+        file.close()
   except Exception as err:
     print(err)
     sys.exit(1)
@@ -105,10 +104,10 @@ def test_pillar(kwargs):
           sls_file = open(f'{root}/{filename}','r').read()
           yaml_data = yaml.safe_load(sls_file)
           pillar_is_valid = isinstance(yaml_data, dict)
-          print(f' - testing pillar file {root}/{filename}: {pillar_is_valid}')    
+          print(f' - testing pillar file {root}/{filename}: {"SUCCESS" if pillar_is_valid else "FAILED"}')    
           pillar_status.append(pillar_is_valid)
         except:
-          print(f' - testing pillar file {root}/{filename}: {False}')    
+          print(f' - testing pillar file {root}/{filename}: FAILED')    
           pillar_status.append(False)
     return False not in pillar_status
   except Exception as err:
