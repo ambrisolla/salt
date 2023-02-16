@@ -93,8 +93,9 @@ def test_states(kwargs):
         state_is_valid = 'PASSED'
       else:
         state_is_valid = 'FAILED'
-      print(f' - testing {state}... {state_is_valid}')
-    return 1 in state_is_valid
+      print(f' - testing state {state}: {state_is_valid}')
+    
+    return 1 in states_status
   except Exception as err:
     print(err)
     sys.exit(1)
