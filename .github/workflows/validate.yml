@@ -1,5 +1,6 @@
-name: Test States, Pillars and Returner 
-on: push
+name: Test States, Pillars and Returner
+on:
+  push
   ##pull_request:
   ##    types:
   ##      - opened
@@ -7,15 +8,16 @@ on: push
   ##      - main
   ##      - develop
 env:
-  TEMP_ENVIRON: test
-  TEMP_ENVIRON_STATES_DIR: /srv/test_salt
-  TEMP_ENVIRON_PILLAR_DIR: /srv/test_pillar
-  PGPASSWORD:              ${{ secrets.PGPASSWORD }}
+  #TEMP_ENVIRON: test
+  #TEMP_ENVIRON_STATES_DIR: /srv/test_salt
+  #TEMP_ENVIRON_PILLAR_DIR: /srv/test_pillar
+  PGPASSWORD: ${{ secrets.PGPASSWORD }}
+  
 jobs:
   #test_database_tables:
   #  name: Test Returners database connection
   #  environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-  #  runs-on: 
+  #  runs-on:
   #    - salt
   #    - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
   #  strategy:
@@ -32,31 +34,28 @@ jobs:
   #          -p ${{ vars.PGPORT }} \
   #          -U ${{ vars.PGUSER }} \
   #          -c "select count(*) from ${{ matrix.returner_tables }}"
-  test_states_and_pillars:
-    name: Test Salt States and Salt Pillars
+  test_salt_changins:
+    name: Test Salt environment changes
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    runs-on: 
+    runs-on:
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    steps:     
+    steps:
       - uses: actions/checkout@v3
-      #- name: Create temporary environment to test States and Pillars
-      #  run: |
-      #    set -e
-      #    sudo rm -rf ${TEMP_ENVIRON_STATES_DIR}/* ${TEMP_ENVIRON_PILLAR_DIR}/*
-      #    sudo mkdir -p ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR}
-      #    sudo rsync -av salt/* ${TEMP_ENVIRON_STATES_DIR}/ --delete
-      #    sudo rsync -av pillar/* ${TEMP_ENVIRON_PILLAR_DIR}/ --delete
-      #    sudo sed -i "s@^base:@test:@" ${TEMP_ENVIRON_PILLAR_DIR}/top.sls
-      #- name: Check Salt Pillars and Salt States
-      #  run: |
-      #    sudo .github/workflows/scripts/run-tests.sh ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR} ${TEMP_ENVIRON}
-      #  shell: bash
+
       - name: Test States and Pillars
-        run: | 
+        run: |
           sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
-            --states-dir ${TEMP_ENVIRON_STATES_DIR} \
-            --salt-env ${TEMP_ENVIRON} \
-            --pillar-dir ${TEMP_ENVIRON_PILLAR_DIR}
-        
-            
+            --states-dir ${{ vars.TEMP_ENVIRON_STATES_DIR }} \
+            --salt-env ${{ vars.TEMP_ENVIRON}} \
+            --pillar-dir ${{ vars.TEMP_ENVIRON_PILLAR_DIR}}
+
+      - name: Test database connection
+        run: |
+          sudo python3 -u .github/workflows/scripts/tests.py --test-db-tables \
+            --db-host ${{ vars.PGHOST }}
+            --db-name ${{ vars.PGNAME }}
+            --db-username ${{ vars.PGUSER }}
+            --db-password ${ PGPASSWORD }
+            --db-port ${{ vars.PGPORT }}
+            --db-tables ${{ vars.PGTABLES }}

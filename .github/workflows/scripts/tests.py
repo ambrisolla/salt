@@ -130,20 +130,17 @@ def test_pillar(kwargs):
     sys.exit(1)
 
 def test_salt(**kwargs):
-  print(f'{message.Blue} TESTE {message.Color_Off}')
-  print(f'{message.Cyan} TESTE {message.Color_Off}')
-  print(f'{message.Red} TESTE {message.Color_Off}')
-  print(f'{message.Yellow} TESTE {message.Color_Off}')
-  print(f'{message.Green} TESTE {message.Color_Off}')
-  print(f'{message.Purple} TESTE {message.Color_Off}')
-  #create_temporary_environment(kwargs)
-  #states_checked = test_states(kwargs)
-  #pillar_checked = test_pillar(kwargs)
-  #print(f'\n - Check States summary: {message.success if states_checked else message.failed}')
-  #print(f' - Check Pillar summary: {message.success if pillar_checked else message.failed}')
+  create_temporary_environment(kwargs)
+  states_checked = test_states(kwargs)
+  pillar_checked = test_pillar(kwargs)
+  print(f'\n - Check States summary: {message.success if states_checked else message.failed}')
+  print(f' - Check Pillar summary: {message.success if pillar_checked else message.failed}')
+  if not pillar_checked or not states_checked:
+    print(f'Error: Some tests failed!')
+    sys.exit(1)
 
-def test_db_tables(**kwargs):
-  pass
+def test_db_tables(kwargs):
+  print(kwargs)
 
 if __name__ == '__main__':
   parser = ArgumentParser()
@@ -189,5 +186,4 @@ if __name__ == '__main__':
           '--db-host, --db-name, --db-username, --db-password, --db-port)!')
         sys.exit(1)
       else:
-        test_db_tables(
-          database_tables=args)
+        test_db_tables(args)
