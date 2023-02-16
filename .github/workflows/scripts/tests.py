@@ -156,7 +156,7 @@ def test_db_tables(kwargs):
     conn = psycopg2.connect(
       host=kwargs['db_host'],
       database=kwargs['db_name'],
-      user=kwargs['db_user'],
+      user=kwargs['db_username'],
       password=kwargs['db_password']
     )
   except Exception as err:
