@@ -141,8 +141,9 @@ def test_salt(**kwargs):
     sys.exit(1)
 
 def show_changes(kwargs):
-  base_dir = '/srv/salt'
-  test_dir = kwargs['temp_states_dir']
+  print(kwargs)
+  #base_dir = '/srv/salt'
+  #test_dir = kwargs['temp_states_dir']
 
 
 def test_db_tables(kwargs):

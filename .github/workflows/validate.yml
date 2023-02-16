@@ -17,18 +17,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Test States and Pillars
-        run: |
-          sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
-            --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
-            --salt-env ${{ vars.TEMP_ENVIRON}} \
-            --temp-pillar-dir ${{ vars.TEMP_PILLAR_DIR}}
-#
-      #- name: Show changed States
+      #- name: Test States and Pillars
       #  run: |
-      #    sudo python3 -u .github/workflows/scripts/tests.py --show-changes \
-      #      --states-dir ${{ vars.TEMP_ENVIRON_STATES_DIR }} \
-      #      --salt-env ${{ vars.TEMP_ENVIRON}} 
+      #    sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
+      #      --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
+      #      --salt-env ${{ vars.TEMP_ENVIRON}} \
+      #      --temp-pillar-dir ${{ vars.TEMP_PILLAR_DIR}}
+#
+      - name: Show changed States
+        run: |
+          sudo python3 -u .github/workflows/scripts/tests.py --show-changes \
+            --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
+            --states-dir ${{ vars.STATES_DIR }} \
+            --salt-env ${{ vars.TEMP_ENVIRON}} 
 
       #- name: Test database connection
       #  run: |
