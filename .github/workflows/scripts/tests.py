@@ -139,26 +139,17 @@ def test_salt(**kwargs):
   if not pillar_checked or not states_checked:
     print(f'Error: Some tests failed!')
     sys.exit(1)
-#{
-# 'salt_env': None, 
-# 'test_salt': False, 
-# 'states_dir': None, 
-# 'pillar_dir': None, 
-# 'test_db_tables': True, 
-# 'db_tables': ['a,b,c'], 
-# 'db_host': 'aaa', 
-# 'db_name': 'asdas', 
-# 'db_username': 'asdas', 
-# 'db_password': 'asdas', 
-# 'db_port': 'asdasd'}
+
 def test_db_tables(kwargs):
   try:
-    conn = psycopg2.connect(
-      host=kwargs['db_host'],
-      database=kwargs['db_name'],
-      user=kwargs['db_username'],
-      password=kwargs['db_password']
-    )
+    #conn = psycopg2.connect(
+    #  host=kwargs['db_host'],
+    #  database=kwargs['db_name'],
+    #  user=kwargs['db_username'],
+    #  password=kwargs['db_password']
+    #)
+    for table in kwargs['db_tables']:
+      print(table)
   except Exception as err:
     print(err)
     sys.exit(1)
