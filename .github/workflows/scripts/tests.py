@@ -85,7 +85,7 @@ def test_states(kwargs):
         shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
       states_status.append(cmd.returncode)
       if cmd.returncode == 0:
-        state_is_valid = 'PASSED'
+        state_is_valid = 'SUCCESS'
       else:
         state_is_valid = 'FAILED'
       print(f' - testing state {state}: {state_is_valid}')    
