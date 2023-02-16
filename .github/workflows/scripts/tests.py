@@ -141,10 +141,33 @@ def test_salt(**kwargs):
     sys.exit(1)
 
 def show_changes(kwargs):
-  print(kwargs)
-  #base_dir = '/srv/salt'
-  #test_dir = kwargs['temp_states_dir']
-
+  states_dir      = kwargs['states_dir']
+  states_files    = os.walk(states_dir)
+  current_states  = [] 
+  for root,dir,filenames in states_files:
+    for filename in filenames:
+      if re.search('.sls$', filename) and not re.match(f'top.sls', filename):
+        path = f'{root}/{filename}'        
+        state = re.sub(f'{states_dir}/|.init.sls|.sls','',path).replace('/','.')
+        current_states.append(state)
+  temp_states_dir      = kwargs['temp_states_dir']
+  temp_states_files    = os.walk(temp_states_dir)
+  new_states  = [] 
+  for root,dir,filenames in temp_states_files:
+    for filename in filenames:
+      if re.search('.sls$', filename) and not re.match(f'top.sls', filename):
+        path = f'{root}/{filename}'
+        state = re.sub(f'{temp_states_dir}/|.init.sls|.sls','',path).replace('/','.')
+        new_states.append(state)
+  states_will_removed    = [ x for x in current_states if x not in new_states]
+  states_will_not_change = [ x for x in current_states if x in new_states]
+  states_will_be_added   = [ x for x in new_states if x not in current_states]
+  for state in states_will_not_change:
+    print(f'{message.Green} Will not change:{message.Color_Off} {state}')
+  for state in states_will_be_added:
+    print(f'{message.Yellow} Will be added:{message.Color_Off} {state}')
+  for state in states_will_removed:
+    print(f'{message.Red} Will be removed:{message.Color_Off} {state}')
 
 def test_db_tables(kwargs):
   try:
