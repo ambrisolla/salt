@@ -52,7 +52,7 @@ jobs:
       #  run: |
       #    sudo .github/workflows/scripts/run-tests.sh ${TEMP_ENVIRON_STATES_DIR} ${TEMP_ENVIRON_PILLAR_DIR} ${TEMP_ENVIRON}
       #  shell: bash
-      - name: Create temporaty environment
+      - name: Test States and Pillars
         run: | 
           sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
             --states-dir ${TEMP_ENVIRON_STATES_DIR} \

@@ -10,11 +10,12 @@ from   argparse   import ArgumentParser
 
 def create_temporary_environment(kwargs):
   try:
-    # set variables
+    ''' set variables '''
     states_dir = kwargs['states_dir']
     pillar_dir = kwargs['pillar_dir']
-    salt_env = kwargs['salt_env']
-    # create temporary directories, if exists, removes and creates again
+    salt_env   = kwargs['salt_env']
+
+    ''' create temporary directories, if exists, removes and creates again '''
     if not re.match('^/srv/[a-z]',states_dir):
       print('Error: States directory needs to be within /srv/ !')
       sys.exit(1)
@@ -29,18 +30,21 @@ def create_temporary_environment(kwargs):
         else:
           shutil.rmtree(directory)
           os.makedirs(directory)
-      # copy states
+      
+      ''' copy states '''
       rsync_state_cmd = f'rsync -av salt/ {states_dir}/ --delete'
       rsync_state = sb.run(rsync_state_cmd, shell=True, stdout=sb.PIPE, stderr=sb.PIPE)
       if rsync_state.returncode != 0:
         print(f'Error: {sb.stderr}')
         sys.exit(1)
-      # copy pillars
+      
+      ''' copy pillars '''
       rsync_pillar_cmd = f'rsync -av pillar/ {pillar_dir}/ --delete'
       rsync_pillar = sb.run(rsync_pillar_cmd, shell=True, stdout=sb.PIPE, stderr=sb.PIPE)
       if rsync_pillar.returncode != 0:
         print(f'Error: {sb.stderr}')
         sys.exit(1)
+      
       '''
         Replace environment "base" to "{salt_env}" in top.sls file.
         This is necessary because the environment variable "base" is used 
@@ -51,13 +55,15 @@ def create_temporary_environment(kwargs):
       with open(f'{pillar_dir}/top.sls', 'w') as file:
           file.write(top_sls_test)
           file.close()
+
   except Exception as err:
     print(err)
     sys.exit(1)
 
 def test_salt(**kwargs):
   create_temporary_environment(kwargs)
-  test_states(kwargs)
+  states_checked = test_states(kwargs)
+  print(f'States checked: {states_checked}')
 
 def test_states(kwargs):
   try:
@@ -71,16 +77,24 @@ def test_states(kwargs):
         if re.search('.sls$',sls_file):
           state = sls_file.replace('.sls','').replace('/','.')
           state = re.sub('.init$','',state)
+
           ''' Do not append top.sls state and all states that 
               placed in reactor directory or reactor.sls file 
           '''
           excluded_pattern = '(\.reactor(.|$)|^win.repo-ng)'
           if state != 'top' and not re.search(excluded_pattern, state):
             states.append(state)
+    states_status = []
     for state in states:
       cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
         shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
-      print(f'{state}:{cmd.returncode}')
+      states_status.append(cmd.returncode)
+      if cmd.returncode == 0:
+        state_is_valid = 'PASSED'
+      else:
+        state_is_valid = 'FAILED'
+      print(f' - testing {state}... {state_is_valid}')
+    return 1 in state_is_valid
   except Exception as err:
     print(err)
     sys.exit(1)
