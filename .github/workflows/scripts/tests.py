@@ -8,6 +8,7 @@ import shutil
 import subprocess as sb
 from   argparse   import ArgumentParser
 
+os.environ['PYTHONUNBUFFERED'] = 1
 
 def create_temporary_environment(kwargs):
   try:
@@ -79,7 +80,6 @@ def test_states(kwargs):
           if state != 'top' and not re.search(excluded_pattern, state):
             states.append(state)
     for state in states:
-      #print(state)
       cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
         shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
       print(f'{state}:{cmd.returncode}')
