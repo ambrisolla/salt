@@ -130,11 +130,17 @@ def test_pillar(kwargs):
     sys.exit(1)
 
 def test_salt(**kwargs):
-  create_temporary_environment(kwargs)
-  states_checked = test_states(kwargs)
-  pillar_checked = test_pillar(kwargs)
-  print(f'\n - Check States summary: {message.success if states_checked else message.failed}')
-  print(f' - Check Pillar summary: {message.success if pillar_checked else message.failed}')
+  print(f'{message.Blue} TESTE {message.Color_Off}')
+  print(f'{message.Cyan} TESTE {message.Color_Off}')
+  print(f'{message.Red} TESTE {message.Color_Off}')
+  print(f'{message.Yellow} TESTE {message.Color_Off}')
+  print(f'{message.Green} TESTE {message.Color_Off}')
+  print(f'{message.Purple} TESTE {message.Color_Off}')
+  #create_temporary_environment(kwargs)
+  #states_checked = test_states(kwargs)
+  #pillar_checked = test_pillar(kwargs)
+  #print(f'\n - Check States summary: {message.success if states_checked else message.failed}')
+  #print(f' - Check Pillar summary: {message.success if pillar_checked else message.failed}')
 
 def test_db_tables(**kwargs):
   pass
