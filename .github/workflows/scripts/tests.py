@@ -148,9 +148,11 @@ def test_db_tables(kwargs):
     #  user=kwargs['db_username'],
     #  password=kwargs['db_password']
     #)
-    for table in kwargs['db_tables']:
-      print(table)
-  except Exception as err:
+    for table in kwargs['db_tables']:    
+      cursor = conn.cursor()
+      cursor.execute(f'select count(*) from {table}')
+      cursor.close()
+  except (Exception, psycopg2.DatabaseError) as err:
     print(err)
     sys.exit(1)
 
