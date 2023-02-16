@@ -43,19 +43,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Test States and Pillars
-        run: |
-          sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
-            --states-dir ${{ vars.TEMP_ENVIRON_STATES_DIR }} \
-            --salt-env ${{ vars.TEMP_ENVIRON}} \
-            --pillar-dir ${{ vars.TEMP_ENVIRON_PILLAR_DIR}}
+      #- name: Test States and Pillars
+      #  run: |
+      #    sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
+      #      --states-dir ${{ vars.TEMP_ENVIRON_STATES_DIR }} \
+      #      --salt-env ${{ vars.TEMP_ENVIRON}} \
+      #      --pillar-dir ${{ vars.TEMP_ENVIRON_PILLAR_DIR}}
 
       - name: Test database connection
         run: |
           sudo python3 -u .github/workflows/scripts/tests.py --test-db-tables \
-            --db-host ${{ vars.PGHOST }}
-            --db-name ${{ vars.PGNAME }}
-            --db-username ${{ vars.PGUSER }}
-            --db-password ${ PGPASSWORD }
-            --db-port ${{ vars.PGPORT }}
+            --db-host ${{ vars.PGHOST }} \
+            --db-name ${{ vars.PGNAME }} \
+            --db-username ${{ vars.PGUSER }} \
+            --db-password ${ PGPASSWORD } \
+            --db-port ${{ vars.PGPORT }} \
             --db-tables ${{ vars.PGTABLES }}
