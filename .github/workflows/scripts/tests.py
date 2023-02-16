@@ -21,8 +21,8 @@ class message:
   White='\033[0;97m'       # White
   Color_Off='\033[0m'      # Color Off
   success=f'{Green}SUCCESS{Color_Off}'
-  warning=f'{Yellow}SUCCESS{Color_Off}'
-  failed=f'{Red}SUCCESS{Color_Off}'
+  warning=f'{Yellow}WARNING{Color_Off}'
+  failed=f'{Red}FAILED{Color_Off}'
 
 def create_temporary_environment(kwargs):
   try:
