@@ -169,6 +169,8 @@ def show_changes(kwargs):
     print(f'{message.Yellow} Will be added:{message.Color_Off} {state}')
   for state in states_will_removed:
     print(f'{message.Red} Will be removed:{message.Color_Off} {state}')
+  print(f'{message.Yellow}WARNING! This step of job compars states names, not content os states {message.Color_Off}')
+
 
 def test_db_tables(kwargs):
   try:
