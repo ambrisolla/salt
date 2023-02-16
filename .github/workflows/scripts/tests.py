@@ -76,7 +76,7 @@ def test_states(kwargs):
     for state in states:
       cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
         shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
-      print(cmd.stdout)
+      print(cmd.returncode)
   except Exception as err:
     print(err)
     sys.exit(1)
@@ -87,7 +87,7 @@ def test_db_tables(**kwargs):
 if __name__ == '__main__':
   parser = ArgumentParser()
   parser.add_argument('--salt-env',        help='Salt environment')
-  parser.add_argument('--test-salt',     help='Test States', action='store_true')
+  parser.add_argument('--test-salt',       help='Test States', action='store_true')
   parser.add_argument('--states-dir',      help='Directory to store temporary States files')
   parser.add_argument('--pillar-dir',      help='Directory to store temporary Pillar files')
   parser.add_argument('--test-db-tables',  help='Test Database tables', action='store_true')
@@ -97,9 +97,7 @@ if __name__ == '__main__':
   parser.add_argument('--db-username',     help='Database username')
   parser.add_argument('--db-password',     help='Database password')
   parser.add_argument('--db-port',         help='Database port')
-
   args = vars(parser.parse_args())
-  
   actions = [
     args['test_salt'],
     args['test_db_tables']]
