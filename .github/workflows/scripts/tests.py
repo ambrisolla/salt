@@ -118,7 +118,7 @@ def test_pillar(kwargs):
 def test_salt(**kwargs):
   create_temporary_environment(kwargs)
   states_checked = test_states(kwargs)
-  pilar_checked = test_pillar(kwargs)
+  pillar_checked = test_pillar(kwargs)
   print(f'\n - Check States summary: {"SUCCESS" if states_checked else "FAILED"}')
   print(f' - Check Pillar summary: {"SUCCESS" if pillar_checked else "FAILED"}')
 
