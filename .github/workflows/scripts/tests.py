@@ -28,19 +28,19 @@ class message:
 def create_temporary_environment(kwargs):
   try:
     ''' set variables '''
-    states_dir = kwargs['states_dir']
-    pillar_dir = kwargs['pillar_dir']
+    temp_states_dir = kwargs['temp_states_dir']
+    temp_pillar_dir = kwargs['temp_pillar_dir']
     salt_env   = kwargs['salt_env']
 
     ''' create temporary directories, if exists, removes and creates again '''
-    if not re.match('^/srv/[a-z]',states_dir):
+    if not re.match('^/srv/[a-z]',temp_states_dir):
       print('Error: States directory needs to be within /srv/ !')
       sys.exit(1)
-    elif not re.match('^/srv/[a-z]',pillar_dir):
+    elif not re.match('^/srv/[a-z]',temp_pillar_dir):
       print('Error: Pillar directory needs to be within /srv/ !')
       sys.exit(1)
     else:
-      directories = [states_dir, pillar_dir]
+      directories = [temp_states_dir, temp_pillar_dir]
       for directory in directories:
         if not os.path.exists(directory):
           os.makedirs(directory)
@@ -49,14 +49,14 @@ def create_temporary_environment(kwargs):
           os.makedirs(directory)
       
       ''' copy states '''
-      rsync_state_cmd = f'rsync -av salt/ {states_dir}/ --delete'
+      rsync_state_cmd = f'rsync -av salt/ {temp_states_dir}/ --delete'
       rsync_state = sb.run(rsync_state_cmd, shell=True, stdout=sb.PIPE, stderr=sb.PIPE)
       if rsync_state.returncode != 0:
         print(f'Error: {sb.stderr}')
         sys.exit(1)
       
       ''' copy pillars '''
-      rsync_pillar_cmd = f'rsync -av pillar/ {pillar_dir}/ --delete'
+      rsync_pillar_cmd = f'rsync -av pillar/ {temp_pillar_dir}/ --delete'
       rsync_pillar = sb.run(rsync_pillar_cmd, shell=True, stdout=sb.PIPE, stderr=sb.PIPE)
       if rsync_pillar.returncode != 0:
         print(f'Error: {sb.stderr}')
@@ -67,9 +67,9 @@ def create_temporary_environment(kwargs):
         This is necessary because the environment variable "base" is used 
         as a main environment in Salt.
       '''
-      top_sls = open(f'{pillar_dir}/top.sls', 'r').read()
+      top_sls = open(f'{temp_pillar_dir}/top.sls', 'r').read()
       top_sls_test = re.sub('^base:',f'{salt_env}:', top_sls)
-      with open(f'{pillar_dir}/top.sls', 'w') as file:
+      with open(f'{temp_pillar_dir}/top.sls', 'w') as file:
         file.write(top_sls_test)
         file.close()
   except Exception as err:
@@ -78,13 +78,13 @@ def create_temporary_environment(kwargs):
 
 def test_states(kwargs):
   try:
-    states_dir = kwargs['states_dir']
+    temp_states_dir = kwargs['temp_states_dir']
     salt_env = kwargs['salt_env']
-    sls_files = [ x for x in os.walk(states_dir) ]
+    sls_files = [ x for x in os.walk(temp_states_dir) ]
     states = []
     for root,dir,filenames in sls_files:
       for filename in filenames:
-        sls_file = f'{root}/{filename}'.replace(f'{states_dir}/','')
+        sls_file = f'{root}/{filename}'.replace(f'{temp_states_dir}/','')
         if re.search('.sls$',sls_file):
           state = sls_file.replace('.sls','').replace('/','.')
           state = re.sub('.init$','',state)
@@ -112,7 +112,7 @@ def test_states(kwargs):
 
 def test_pillar(kwargs):
   try:
-    sls_files = [ x for x in os.walk(kwargs['pillar_dir']) ]
+    sls_files = [ x for x in os.walk(kwargs['temp_pillar_dir']) ]
     pillar_status = []
     for root,dir,filenames in sls_files:
       for filename in filenames:
@@ -140,6 +140,11 @@ def test_salt(**kwargs):
     print(f'Error: Some tests failed!')
     sys.exit(1)
 
+def show_changes(kwargs):
+  base_dir = '/srv/salt'
+  test_dir = kwargs['temp_states_dir']
+
+
 def test_db_tables(kwargs):
   try:
     conn = psycopg2.connect(
@@ -148,6 +153,7 @@ def test_db_tables(kwargs):
       user=kwargs['db_username'],
       password=kwargs['db_password']
     )
+    ''' Run a simple query to check if the table exists '''
     for table in kwargs['db_tables']:    
       cursor = conn.cursor()
       cursor.execute(f'select count(*) from {table}')
@@ -163,6 +169,7 @@ if __name__ == '__main__':
   parser.add_argument('--states-dir',      help='Directory to store temporary States files')
   parser.add_argument('--pillar-dir',      help='Directory to store temporary Pillar files')
   parser.add_argument('--test-db-tables',  help='Test Database tables', action='store_true')
+  parser.add_argument('--show-changes',    help='Show changed States', action='store_true')
   parser.add_argument('--db-tables',       help='Database tables to test', nargs='+')
   parser.add_argument('--db-host',         help='Database host')
   parser.add_argument('--db-name',         help='Database name')
@@ -172,22 +179,23 @@ if __name__ == '__main__':
   args = vars(parser.parse_args())
   actions = [
     args['test_salt'],
-    args['test_db_tables']]
+    args['test_db_tables'],
+    args['show_changes']]
   if actions.count(True) < 1:
-    print('Error: At least one action (--test-states, --test-db-tables, --test-pillar) needs to be specified.')
+    print('Error: At least one action (--test-salt, --test-db-tables, --show-changes) needs to be specified.')
     sys.exit(1)
   elif actions.count(True) > 1:
-    print('Error: Only one action (--test-states, --test-db-tables, --test-pillar) needs to be specified.')
+    print('Error: Only one action (--test-salt, --test-db-tables, --show-changes) needs to be specified.')
     sys.exit(1)
   else:
     if args['test_salt']:
-      if args['states_dir'] == None or args['salt_env'] == None or args['pillar_dir'] == None:
+      if args['temp_states_dir'] == None or args['salt_env'] == None or args['temp_pillar_dir'] == None:
         print('Error: Missing parameters (--states-dir, --pillar-dir, --salt-env)!')
         sys.exit(1)
       else:
         test_salt(
-          states_dir=args['states_dir'],
-          pillar_dir=args['pillar_dir'],
+          temp_states_dir=args['temp_states_dir'],
+          temp_pillar_dir=args['temp_pillar_dir'],
           salt_env=args['salt_env'])
     elif args['test_db_tables']:
       if args['db_tables']    == None or \
@@ -201,3 +209,5 @@ if __name__ == '__main__':
         sys.exit(1)
       else:
         test_db_tables(args)
+    elif args['show_changes']:
+      show_changes(args)

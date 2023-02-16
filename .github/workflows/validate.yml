@@ -8,26 +8,6 @@ on:
   ##      - main
   ##      - develop  
 jobs:
-  #test_database_tables:
-  #  name: Test Returners database connection
-  #  environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-  #  runs-on:
-  #    - salt
-  #    - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-  #  strategy:
-  #    matrix:
-  #      returner_tables:
-  #        - jids
-  #        - salt_returns
-  #        - salt_events
-  #  steps:
-  #    - name: Test table ${{ matrix.returner_tables }}
-  #      run: |
-  #        psql \
-  #          -h ${{ vars.PGHOST }} \
-  #          -p ${{ vars.PGPORT }} \
-  #          -U ${{ vars.PGUSER }} \
-  #          -c "select count(*) from ${{ matrix.returner_tables }}"
   test_salt_changins:
     name: Test Salt environment changes
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
@@ -37,19 +17,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      #- name: Test States and Pillars
-      #  run: |
-      #    sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
-      #      --states-dir ${{ vars.TEMP_ENVIRON_STATES_DIR }} \
-      #      --salt-env ${{ vars.TEMP_ENVIRON}} \
-      #      --pillar-dir ${{ vars.TEMP_ENVIRON_PILLAR_DIR}}
-
-      - name: Test database connection
+      - name: Test States and Pillars
         run: |
-          sudo python3 -u .github/workflows/scripts/tests.py --test-db-tables \
-            --db-host ${{ vars.PGHOST }} \
-            --db-name ${{ vars.PGNAME }} \
-            --db-username ${{ vars.PGUSER }} \
-            --db-password ${{ secrets.PGPASSWORD }} \
-            --db-port ${{ vars.PGPORT }} \
-            --db-tables ${{ vars.PGTABLES }}
+          sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
+            --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
+            --salt-env ${{ vars.TEMP_ENVIRON}} \
+            --temp-pillar-dir ${{ vars.TEMP_PILLAR_DIR}}
+#
+      #- name: Show changed States
+      #  run: |
+      #    sudo python3 -u .github/workflows/scripts/tests.py --show-changes \
+      #      --states-dir ${{ vars.TEMP_ENVIRON_STATES_DIR }} \
+      #      --salt-env ${{ vars.TEMP_ENVIRON}} 
+
+      #- name: Test database connection
+      #  run: |
+      #    sudo python3 -u .github/workflows/scripts/tests.py --test-db-tables \
+      #      --db-host ${{ vars.PGHOST }} \
+      #      --db-name ${{ vars.PGNAME }} \
+      #      --db-username ${{ vars.PGUSER }} \
+      #      --db-password ${{ secrets.PGPASSWORD }} \
+      #      --db-port ${{ vars.PGPORT }} \
+      #      --db-tables ${{ vars.PGTABLES }}
