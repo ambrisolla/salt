@@ -56,6 +56,6 @@ jobs:
             --db-host ${{ vars.PGHOST }} \
             --db-name ${{ vars.PGNAME }} \
             --db-username ${{ vars.PGUSER }} \
-            --db-password ${ PGPASSWORD } \
+            --db-password ${{ secrets.PGPASSWORD }} \
             --db-port ${{ vars.PGPORT }} \
             --db-tables ${{ vars.PGTABLES }}
