@@ -13,7 +13,7 @@ from   argparse   import ArgumentParser
 class message:
   Black='\033[0;90m'       # Black
   Red='\033[0;91m'         # Red
-  Green='\033[0;92m'       # Green
+  Green='\033[0;32m'       # Green
   Yellow='\033[0;93m'      # Yellow
   Blue='\033[0;94m'        # Blue
   Purple='\033[0;95m'      # Purple
