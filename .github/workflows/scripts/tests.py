@@ -100,9 +100,9 @@ def test_states(kwargs):
         shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
       states_status.append(cmd.returncode)
       if cmd.returncode == 0:
-        state_is_valid = 'SUCCESS'
+        state_is_valid = message.success
       else:
-        state_is_valid = 'FAILED'
+        state_is_valid = message.failed
       print(f' - testing state {state}: {state_is_valid}')    
     return 1 not in states_status
   except Exception as err:
