@@ -169,7 +169,7 @@ def show_changes(kwargs):
     print(f'{message.Yellow} Will be added:{message.Color_Off} {state}')
   for state in states_will_removed:
     print(f'{message.Red} Will be removed:{message.Color_Off} {state}')
-  print(f'{message.Yellow}WARNING! This step of job compars states names, not content os states {message.Color_Off}')
+  print(f'\n{message.Yellow}WARNING! This job step compares states names/paths, not states contents! {message.Color_Off}')
 
 
 def test_db_tables(kwargs):
@@ -184,6 +184,12 @@ def test_db_tables(kwargs):
     for table in kwargs['db_tables']:    
       cursor = conn.cursor()
       cursor.execute(f'select count(*) from {table}')
+      res = cursor.fetchone()
+      table_verified = isinstance(list(res)[0], int)
+      print(f' - testing table {table}: {message.success if table_verified else message.failed}')
+      if not table_verified:
+        print('Error: table {table}')
+        sys.exit(1)
       cursor.close()
   except (Exception, psycopg2.DatabaseError) as err:
     print(err)
