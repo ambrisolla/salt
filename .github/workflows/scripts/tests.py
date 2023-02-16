@@ -92,7 +92,8 @@ def test_states(kwargs):
           ''' Do not append top.sls state and all states that 
               placed in reactor directory or reactor.sls file 
           '''
-          excluded_pattern = '(\.reactor(.|$)|^win.repo-ng)'
+          #excluded_pattern = '(\.reactor(.|$)|^win.repo-ng)'
+          excluded_pattern = '^win.repo-ng'
           if state != 'top' and not re.search(excluded_pattern, state):
             states.append(state)
     states_status = []
@@ -146,7 +147,7 @@ def show_changes(kwargs):
   current_states  = [] 
   for root,dir,filenames in states_files:
     for filename in filenames:
-      if re.search('.sls$', filename) and not re.match(f'top.sls', filename):
+      if re.search('.sls$', filename) and not re.match(f'top.sls', filename) and not re.search(f'{states_dir}/win/repo-ng',root):
         path = f'{root}/{filename}'        
         state = re.sub(f'{states_dir}/|.init.sls|.sls','',path).replace('/','.')
         current_states.append(state)
@@ -155,7 +156,7 @@ def show_changes(kwargs):
   new_states  = [] 
   for root,dir,filenames in temp_states_files:
     for filename in filenames:
-      if re.search('.sls$', filename) and not re.match(f'top.sls', filename):
+      if re.search('.sls$', filename) and not re.match(f'top.sls', filename) and not re.search(f'{temp_states_dir}/win/repo-ng',root):
         path = f'{root}/{filename}'
         state = re.sub(f'{temp_states_dir}/|.init.sls|.sls','',path).replace('/','.')
         new_states.append(state)
@@ -168,6 +169,8 @@ def show_changes(kwargs):
     print(f'{message.Yellow} Will be added:{message.Color_Off} {state}')
   for state in states_will_removed:
     print(f'{message.Red} Will be removed:{message.Color_Off} {state}')
+  print(f'\n{message.Yellow}WARNING! This job step compares states names/paths, not states contents! {message.Color_Off}')
+
 
 def test_db_tables(kwargs):
   try:
@@ -181,6 +184,12 @@ def test_db_tables(kwargs):
     for table in kwargs['db_tables']:    
       cursor = conn.cursor()
       cursor.execute(f'select count(*) from {table}')
+      res = cursor.fetchone()
+      table_verified = isinstance(list(res)[0], int)
+      print(f' - testing table {table}: {message.success if table_verified else message.failed}')
+      if not table_verified:
+        print('Error: table {table}')
+        sys.exit(1)
       cursor.close()
   except (Exception, psycopg2.DatabaseError) as err:
     print(err)
