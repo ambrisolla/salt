@@ -9,6 +9,21 @@ import shutil
 import subprocess as sb
 from   argparse   import ArgumentParser
 
+# set colors
+class message:
+  Black='\033[0;90m'       # Black
+  Red='\033[0;91m'         # Red
+  Green='\033[0;92m'       # Green
+  Yellow='\033[0;93m'      # Yellow
+  Blue='\033[0;94m'        # Blue
+  Purple='\033[0;95m'      # Purple
+  Cyan='\033[0;96m'        # Cyan
+  White='\033[0;97m'       # White
+  Color_Off='\033[0m'      # Color Off
+  success=f'{Green}SUCCESS{Color_Off}'
+  warning=f'{Yellow}SUCCESS{Color_Off}'
+  failed=f'{Red}SUCCESS{Color_Off}'
+
 def create_temporary_environment(kwargs):
   try:
     ''' set variables '''
@@ -104,10 +119,10 @@ def test_pillar(kwargs):
           sls_file = open(f'{root}/{filename}','r').read()
           yaml_data = yaml.safe_load(sls_file)
           pillar_is_valid = isinstance(yaml_data, dict)
-          print(f' - testing pillar file {root}/{filename}: {"SUCCESS" if pillar_is_valid else "FAILED"}')    
+          print(f' - testing pillar file {root}/{filename}: {message.success if pillar_is_valid else message.failed}')    
           pillar_status.append(pillar_is_valid)
         except:
-          print(f' - testing pillar file {root}/{filename}: FAILED')    
+          print(f' - testing pillar file {root}/{filename}: {message.failed}')    
           pillar_status.append(False)
     return False not in pillar_status
   except Exception as err:
@@ -116,11 +131,10 @@ def test_pillar(kwargs):
 
 def test_salt(**kwargs):
   create_temporary_environment(kwargs)
-  print("\033[94m TESTE \033[0m")
-  #states_checked = test_states(kwargs)
-  #pillar_checked = test_pillar(kwargs)
-  #print(f'\n - Check States summary: {"SUCCESS" if states_checked else "FAILED"}')
-  #print(f' - Check Pillar summary: {"SUCCESS" if pillar_checked else "FAILED"}')
+  states_checked = test_states(kwargs)
+  pillar_checked = test_pillar(kwargs)
+  print(f'\n - Check States summary: {message.success if states_checked else message.failed}')
+  print(f' - Check Pillar summary: {message.success if pillar_checked else message.failed}')
 
 def test_db_tables(**kwargs):
   pass
