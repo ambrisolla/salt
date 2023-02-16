@@ -1,48 +1,42 @@
-name: Validate Salt Infrastructure Management codes
-on: 
-  pull_request:
-      types:
-        - opened
-      branches:
-        - main
-        - develop
-env:
-  STATES_DIR: /srv/validate_salt
-  SALT_ENV: validate
-  PILLAR_DIR: /srv/validate_pillar
-
+name: Test States, Pillars and Returner
+on:
+  push
+  ##pull_request:
+  ##    types:
+  ##      - opened
+  ##    branches:
+  ##      - main
+  ##      - develop  
 jobs:
-  validate:
-    name: Validate Salt States and Salt Pillars
-    runs-on: 
+  test_salt_changins:
+    name: Test Salt environment changes
+    environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    runs-on:
       - salt
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
-    steps:     
+    steps:
       - uses: actions/checkout@v3
 
-      - name: Install requirements
-        run : |
-          sudo yum install -y epel-release
-          sudo yum install -y jq rsync snapd
-          if [[ ! $(snap list yq 2> /dev/null) ]]
-          then
-            sudo ln -s /var/lib/snapd/snap /snap
-            sudo systemctl enable snapd
-            sudo systemctl start snapd
-            sudo snap install yq
-          fi
-
-      - name: Create "validate" environment
+      - name: Test States and Pillars
         run: |
-          set -e
-          sudo rm -rf ${STATES_DIR}/* ${PILLAR_DIR}/*
-          sudo mkdir -p ${STATES_DIR} ${PILLAR_DIR}
-          sudo rsync -av salt/* ${STATES_DIR}/ --delete
-          sudo rsync -av pillar/* ${PILLAR_DIR}/ --delete
-      
-      - name: Check Salt Pillars and Salt States
-        run: |
-          sudo .github/workflows/scripts/validate.sh ${STATES_DIR} ${PILLAR_DIR} ${SALT_ENV}
+          sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
+            --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
+            --salt-env ${{ vars.TEMP_ENVIRON}} \
+            --temp-pillar-dir ${{ vars.TEMP_PILLAR_DIR}}
 
-      - name: Remove "validade" environment
-        run: sudo rm -rf ${STATES_DIR} ${PILLAR_DIR}
+      - name: Show changed States
+        run: |
+          sudo python3 -u .github/workflows/scripts/tests.py --show-changes \
+            --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
+            --states-dir ${{ vars.STATES_DIR }} \
+            --salt-env ${{ vars.TEMP_ENVIRON}} 
+
+      - name: Test database connection
+        run: |
+          sudo python3 -u .github/workflows/scripts/tests.py --test-db-tables \
+            --db-host ${{ vars.PGHOST }} \
+            --db-name ${{ vars.PGNAME }} \
+            --db-username ${{ vars.PGUSER }} \
+            --db-password ${{ secrets.PGPASSWORD }} \
+            --db-port ${{ vars.PGPORT }} \
+            --db-tables ${{ vars.PGTABLES }}
