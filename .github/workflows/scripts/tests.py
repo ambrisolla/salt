@@ -76,6 +76,7 @@ def test_states(kwargs):
     for state in states:
       cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
         shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
+      print(cmd.stdout)
   except Exception as err:
     print(err)
     sys.exit(1)
