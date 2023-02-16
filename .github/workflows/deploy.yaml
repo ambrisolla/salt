@@ -22,10 +22,12 @@ jobs:
           sudo rsync -av pillar/* /srv/pillar/ --delete
           sudo salt '*' saltutil.refresh_pillar --async
 
+      - name: Run Highstate on Master
+        run: | 
+          sudo salt-call state.highstate
+          
       - name: Sync Salt resources
         run : |
           sudo salt "*" saltutil.sync_all --async
       
-      - name: Run Highstate on Master
-        run: | 
-          sudo salt-call state.highstate
+      
