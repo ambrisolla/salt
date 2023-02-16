@@ -6,6 +6,7 @@ import sys
 import json
 import yaml
 import shutil
+import psycopg2
 import subprocess as sb
 from   argparse   import ArgumentParser
 
@@ -138,9 +139,29 @@ def test_salt(**kwargs):
   if not pillar_checked or not states_checked:
     print(f'Error: Some tests failed!')
     sys.exit(1)
-
+#{
+# 'salt_env': None, 
+# 'test_salt': False, 
+# 'states_dir': None, 
+# 'pillar_dir': None, 
+# 'test_db_tables': True, 
+# 'db_tables': ['a,b,c'], 
+# 'db_host': 'aaa', 
+# 'db_name': 'asdas', 
+# 'db_username': 'asdas', 
+# 'db_password': 'asdas', 
+# 'db_port': 'asdasd'}
 def test_db_tables(kwargs):
-  print(kwargs)
+  try:
+    conn = psycopg2.connect(
+      host=kwargs['db_host'],
+      database=kwargs['db_name'],
+      user=kwargs['db_user'],
+      password=kwargs['db_password']
+    )
+  except Exception as err:
+    print(err)
+    sys.exit(1)
 
 if __name__ == '__main__':
   parser = ArgumentParser()

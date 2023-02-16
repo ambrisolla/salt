@@ -6,13 +6,7 @@ on:
   ##      - opened
   ##    branches:
   ##      - main
-  ##      - develop
-env:
-  #TEMP_ENVIRON: test
-  #TEMP_ENVIRON_STATES_DIR: /srv/test_salt
-  #TEMP_ENVIRON_PILLAR_DIR: /srv/test_pillar
-  PGPASSWORD: ${{ secrets.PGPASSWORD }}
-  
+  ##      - develop  
 jobs:
   #test_database_tables:
   #  name: Test Returners database connection
