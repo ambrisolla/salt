@@ -8,8 +8,6 @@ import shutil
 import subprocess as sb
 from   argparse   import ArgumentParser
 
-os.environ['PYTHONUNBUFFERED'] = 1
-
 def create_temporary_environment(kwargs):
   try:
     # set variables
