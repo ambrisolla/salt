@@ -72,11 +72,17 @@ def test_states(kwargs):
         if re.search('.sls$',sls_file):
           state = sls_file.replace('.sls','').replace('/','.')
           state = re.sub('.init$','',state)
-          states.append(state)
+          ''' Do not append top.sls state and all states that 
+              placed in reactor directory or reactor.sls file 
+          '''
+          excluded_pattern = '(\.reactor(.|$)|^win.repo-ng)'
+          if state != 'top' and not re.search(excluded_pattern, state):
+            states.append(state)
     for state in states:
+      #print(state)
       cmd = sb.run(f'salt-call state.sls_exists {state} saltenv={salt_env} --out=json', 
         shell=True, stderr=sb.PIPE, stdout=sb.PIPE)
-      print(cmd.returncode)
+      print(f'{state}:{cmd.returncode}')
   except Exception as err:
     print(err)
     sys.exit(1)
