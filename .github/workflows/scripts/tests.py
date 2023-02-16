@@ -92,7 +92,8 @@ def test_states(kwargs):
           ''' Do not append top.sls state and all states that 
               placed in reactor directory or reactor.sls file 
           '''
-          excluded_pattern = '(\.reactor(.|$)|^win.repo-ng)'
+          #excluded_pattern = '(\.reactor(.|$)|^win.repo-ng)'
+          excluded_pattern = '^win.repo-ng'
           if state != 'top' and not re.search(excluded_pattern, state):
             states.append(state)
     states_status = []
