@@ -155,7 +155,7 @@ def show_changes(kwargs):
   new_states  = [] 
   for root,dir,filenames in temp_states_files:
     for filename in filenames:
-      if re.search('.sls$', filename) and not re.match(f'top.sls', filename):
+      if re.search('.sls$', filename) and not re.match(f'top.sls', filename) and not re.search(f'{temp_states_dir}/win/repo-ng',root):
         path = f'{root}/{filename}'
         state = re.sub(f'{temp_states_dir}/|.init.sls|.sls','',path).replace('/','.')
         new_states.append(state)
