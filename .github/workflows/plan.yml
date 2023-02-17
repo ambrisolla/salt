@@ -32,7 +32,7 @@ jobs:
       #      --salt-env ${{ vars.TEMP_ENVIRON}} 
       
       - name: Destroy temporary directories
-        if: ${{ startsWith(vars.TEMP_STATES_DIR, '/ssrv/[a-z]') }}
+        if: ${{ startsWith(vars.TEMP_STATES_DIR, '/srv/[a-z]') }}
         run: |
           rm -rf ${{ vars.TEMP_STATES_DIR }} --preserve-root=all
           rm -rf ${{ vars.TEMP_PILLAR_DIR }} --preserve-root=all
