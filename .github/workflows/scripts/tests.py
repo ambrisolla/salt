@@ -92,7 +92,6 @@ def test_states(kwargs):
           ''' Do not append top.sls state and all states that 
               placed in reactor directory or reactor.sls file 
           '''
-          #excluded_pattern = '(\.reactor(.|$)|^win.repo-ng)'
           excluded_pattern = '^win.repo-ng'
           if state != 'top' and not re.search(excluded_pattern, state):
             states.append(state)
@@ -133,13 +132,22 @@ def test_pillar(kwargs):
 
 def test_salt(**kwargs):
   create_temporary_environment(kwargs)
+  
   states_checked = test_states(kwargs)
   pillar_checked = test_pillar(kwargs)
+  
   print(f'\n - Check States summary: {message.success if states_checked else message.failed}')
   print(f' - Check Pillar summary: {message.success if pillar_checked else message.failed}')
+  
+  destroy_temporary_environment({
+    'temp_states_dir' : kwargs['temp_states_dir'],
+    'temp_pillar_dir' : kwargs['temp_pillar_dir']
+  })
+
   if not pillar_checked or not states_checked:
     print(f'Error: Some tests failed!')
     sys.exit(1)
+  
 
 def show_changes(kwargs):
   states_dir      = kwargs['states_dir']
@@ -170,7 +178,7 @@ def show_changes(kwargs):
   for state in states_will_removed:
     print(f'{message.Red} Will be removed:{message.Color_Off} {state}')
   print(f'\n{message.Yellow}WARNING! This job step compares states names/paths, not states contents! {message.Color_Off}')
-
+  
 def destroy_temporary_environment(kwargs):
   try:
     ''' set variables '''
