@@ -164,7 +164,7 @@ def show_changes(kwargs):
   states_will_not_change = [ x for x in current_states if x in new_states]
   states_will_be_added   = [ x for x in new_states if x not in current_states]
   for state in states_will_not_change:
-    print(f'{message.Green} Will not change:{message.Color_Off} {state}')
+    print(f'{message.Green} Will not be changed:{message.Color_Off} {state}')
   for state in states_will_be_added:
     print(f'{message.Yellow} Will be added:{message.Color_Off} {state}')
   for state in states_will_removed:
