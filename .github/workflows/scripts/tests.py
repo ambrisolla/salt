@@ -139,11 +139,6 @@ def test_salt(**kwargs):
   print(f'\n - Check States summary: {message.success if states_checked else message.failed}')
   print(f' - Check Pillar summary: {message.success if pillar_checked else message.failed}')
   
-  destroy_temporary_environment({
-    'temp_states_dir' : kwargs['temp_states_dir'],
-    'temp_pillar_dir' : kwargs['temp_pillar_dir']
-  })
-
   if not pillar_checked or not states_checked:
     print(f'Error: Some tests failed!')
     sys.exit(1)
@@ -178,29 +173,6 @@ def show_changes(kwargs):
   for state in states_will_removed:
     print(f'{message.Red} Will be removed:{message.Color_Off} {state}')
   print(f'\n{message.Yellow}WARNING! This job step compares states names/paths, not states contents! {message.Color_Off}')
-  
-def destroy_temporary_environment(kwargs):
-  try:
-    ''' set variables '''
-    temp_states_dir = kwargs['temp_states_dir']
-    temp_pillar_dir = kwargs['temp_pillar_dir']
-
-    ''' create temporary directories, if exists, removes and creates again '''
-    if not re.match('^/srv/[a-z]',temp_states_dir):
-      print('Error: States directory needs to be within /srv/ !')
-      sys.exit(1)
-    elif not re.match('^/srv/[a-z]',temp_pillar_dir):
-      print('Error: Pillar directory needs to be within /srv/ !')
-      sys.exit(1)
-    else:
-      directories = [temp_states_dir, temp_pillar_dir]
-      for directory in directories:
-        if os.path.exists(directory):
-          shutil.rmtree(directory)
-  except Exception as err:
-    print(err)
-    sys.exit(1)
- 
 
 def test_db_tables(kwargs):
   try:

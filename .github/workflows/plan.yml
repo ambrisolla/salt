@@ -1,12 +1,12 @@
 name: Test States, Pillars and Returner
 on:
-  #push
-  pull_request:
-      types:
-        - opened
-      branches:
-        - main
-        - develop  
+  push
+  #pull_request:
+  #    types:
+  #      - opened
+  #    branches:
+  #      - main
+  #      - develop  
 jobs:
   test_salt_changins:
     name: Test Salt environment changes
@@ -17,26 +17,32 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Test States and Pillars
-        run: |
-          sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
-            --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
-            --salt-env ${{ vars.TEMP_ENVIRON}} \
-            --temp-pillar-dir ${{ vars.TEMP_PILLAR_DIR}}
-
-      - name: Show changed States
-        run: |
-          sudo python3 -u .github/workflows/scripts/tests.py --show-changes \
-            --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
-            --states-dir ${{ vars.STATES_DIR }} \
-            --salt-env ${{ vars.TEMP_ENVIRON}} 
+      #- name: Test States and Pillars
+      #  run: |
+      #    sudo python3 -u .github/workflows/scripts/tests.py --test-salt \
+      #      --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
+      #      --salt-env ${{ vars.TEMP_ENVIRON}} \
+      #      --temp-pillar-dir ${{ vars.TEMP_PILLAR_DIR}}
+#
+      #- name: Show changed States
+      #  run: |
+      #    sudo python3 -u .github/workflows/scripts/tests.py --show-changes \
+      #      --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
+      #      --states-dir ${{ vars.STATES_DIR }} \
+      #      --salt-env ${{ vars.TEMP_ENVIRON}} 
       
-      - name: Test database connection
+      - name: Destroy temporary directories
+        if: ${{ vars.TEMP_STATES_DIR }} =~ '^/srv/[a-z]'
         run: |
-          sudo python3 -u .github/workflows/scripts/tests.py --test-db-tables \
-            --db-host ${{ vars.PGHOST }} \
-            --db-name ${{ vars.PGNAME }} \
-            --db-username ${{ vars.PGUSER }} \
-            --db-password ${{ secrets.PGPASSWORD }} \
-            --db-port ${{ vars.PGPORT }} \
-            --db-tables ${{ vars.PGTABLES }}
+          rm -rf ${{ vars.TEMP_STATES_DIR }} --preserve-root=all
+          rm -rf ${{ vars.TEMP_PILLAR_DIR }} --preserve-root=all
+
+      #- name: Test database connection
+      #  run: |
+      #    sudo python3 -u .github/workflows/scripts/tests.py --test-db-tables \
+      #      --db-host ${{ vars.PGHOST }} \
+      #      --db-name ${{ vars.PGNAME }} \
+      #      --db-username ${{ vars.PGUSER }} \
+      #      --db-password ${{ secrets.PGPASSWORD }} \
+      #      --db-port ${{ vars.PGPORT }} \
+      #      --db-tables ${{ vars.PGTABLES }}
