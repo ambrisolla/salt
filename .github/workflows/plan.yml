@@ -1,6 +1,5 @@
 name: Test States, Pillars and Returner
 on:
-  #push
   pull_request:
       types:
         - opened
@@ -23,13 +22,18 @@ jobs:
             --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
             --salt-env ${{ vars.TEMP_ENVIRON}} \
             --temp-pillar-dir ${{ vars.TEMP_PILLAR_DIR}}
-
       - name: Show changed States
         run: |
           sudo python3 -u .github/workflows/scripts/tests.py --show-changes \
             --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
             --states-dir ${{ vars.STATES_DIR }} \
             --salt-env ${{ vars.TEMP_ENVIRON}} 
+      
+      - name: Destroy temporary directories
+        if: ${{ startsWith(vars.TEMP_STATES_DIR, '/srv/') && startsWith(vars.TEMP_PILLAR_DIR, '/srv/') }}
+        run: |
+          sudo rm -rf ${{ vars.TEMP_STATES_DIR }} --preserve-root=all
+          sudo rm -rf ${{ vars.TEMP_PILLAR_DIR }} --preserve-root=all
 
       - name: Test database connection
         run: |
