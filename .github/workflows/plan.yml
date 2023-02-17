@@ -30,7 +30,7 @@ jobs:
             --temp-states-dir ${{ vars.TEMP_STATES_DIR }} \
             --states-dir ${{ vars.STATES_DIR }} \
             --salt-env ${{ vars.TEMP_ENVIRON}} 
-
+      
       - name: Test database connection
         run: |
           sudo python3 -u .github/workflows/scripts/tests.py --test-db-tables \
