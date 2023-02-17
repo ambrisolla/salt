@@ -1,12 +1,11 @@
 name: Test States, Pillars and Returner
 on:
-  push
-  #pull_request:
-  #    types:
-  #      - opened
-  #    branches:
-  #      - main
-  #      - develop  
+  pull_request:
+      types:
+        - opened
+      branches:
+        - main
+        - develop  
 jobs:
   test_salt_changins:
     name: Test Salt environment changes
