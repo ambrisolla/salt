@@ -1,7 +1,5 @@
 {% from "common/configurations/dns/map.jinja" import dns with context %}
-{% set  nameservers = dns.nameservers %}
-{% set  search      = dns.search %}
-{% set  options     = dns.options %}
+
 
 dns:
   file.managed:
@@ -12,6 +10,6 @@ dns:
     - group: root
     - template: jinja
     - defaults:
-        nameservers: {{ nameservers }}
-        search: {{ search }}
-        options: {{ options }}
+        nameservers: {{ dns.nameservers }}
+        search: {{ dns.search }}
+        options: {{ dns.options }}
