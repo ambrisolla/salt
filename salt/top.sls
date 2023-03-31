@@ -8,9 +8,5 @@ base:
     - common.configurations
     - common.services
     - common.schedules
-  'G@os_family:RedHat':  
-    - common.configurations.rhsm
   'G@nodetype:salt-master':
     - salt_master
-  'G@tribe:TIS':
-    - tribes.tis
