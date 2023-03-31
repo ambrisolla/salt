@@ -1,0 +1,1 @@
+# salt-configuration-management

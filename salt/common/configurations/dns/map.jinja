@@ -1,14 +1,16 @@
 #!jinja|yaml
 
-{% set dns = {
-  'nameservers' : [
-    '8.8.8.8',
-    '8.8.4.4'
-    ],
-  'search' : 'example.com',
-  'options' : [
-    'rotate',
-    'timeout:1',
-    'attempts:5'
+{% if grains['id'] | regex_match('(.*)-[1-9]n[0-9][0-9].(.*)')  %}
+  {% set nameservers = ['10.220.16.105','10.220.16.106'] %}
+  {% set search      = 'npad.stone.com.br' %}
+{% endif %}
+
+ {% set dns = {
+   'nameservers' : nameservers,
+   'search' : search,
+   'options' : [
+     'rotate',
+     'timeout:1',
+     'attempts:5'
     ]
-} %}
+ }%}
