@@ -8,6 +8,7 @@ on:
         - develop
 jobs:
   deploy:
+
     name: Deploy Salt States and Salt Pillars
     environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     runs-on: 
@@ -15,6 +16,9 @@ jobs:
       - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
     if: github.event.pull_request.merged == true
     steps:     
+      - name: Checkout
+        uses: actions/checkout@v3
+        
       - name: Configure Returner DB access
         run: | 
           sed -i "s/__PGHOST__/${{ vars.PGHOST }}/g; \
