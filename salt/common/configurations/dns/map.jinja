@@ -1,9 +1,9 @@
 #!jinja|yaml
 
-{% if grains['id'] | regex_match('(.*)-[1-9]n[0-9][0-9].(.*)')  %}
-  {% set nameservers = ['10.220.16.105','10.220.16.106'] %}
-  {% set search      = 'npad.stone.com.br' %}
-{% endif %}
+
+{% set nameservers = ['10.220.16.105','10.220.16.106'] %}
+{% set search      = 'npad.stone.com.br' %}
+
 
  {% set dns = {
    'nameservers' : nameservers,
