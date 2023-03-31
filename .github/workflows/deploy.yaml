@@ -1,0 +1,41 @@
+name: Deploy Salt Infrastructure Management codes
+on: 
+  pull_request:
+      types:
+        - closed
+      branches:
+        - main
+        - develop
+jobs:
+  deploy:
+    name: Deploy Salt States and Salt Pillars
+    environment: ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    runs-on: 
+      - salt
+      - ${{ github.base_ref == 'main' && 'prod' || 'nprod' }}
+    if: github.event.pull_request.merged == true
+    steps:     
+      - name: Configure Returner DB access
+        run: | 
+          sed -i "s/__PGHOST__/${{ vars.PGHOST }}/g; \
+                  s/__PGUSER__/${{ vars.PGUSER }}/g; \
+                  s/__PGPASSWORD__/${{ secrets.PGPASSWORD }}/g; \
+                  s/__PGNAME__/${{ vars.PGNAME }}/g; \
+                  s/__PGPORT__/${{ vars.PGPORT }}/g;" salt/salt_master/files/returners.conf
+      
+      - name: Deploy Salt States
+        run: sudo rsync -av salt/* /srv/salt/ --delete
+      
+      - name: Deploy Salt Pillars
+        run: |
+          sudo rsync -av pillar/* /srv/pillar/ --delete
+          sudo salt '*' saltutil.refresh_pillar --async
+      - name: Run Highstate on Master
+        run: | 
+          sudo salt-call state.highstate
+          
+      - name: Sync Salt resources
+        run : |
+          sudo salt "*" saltutil.sync_all --async
+      
+      
