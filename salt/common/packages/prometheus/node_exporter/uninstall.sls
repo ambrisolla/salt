@@ -1,7 +1,5 @@
-{% set port = pillar['prometheus']['node_exporter']['port'] %}
-{% set version = pillar['prometheus']['node_exporter']['version'] %}
-{% set source_hash = pillar['prometheus']['node_exporter']['source_hash'] %}
-{% set install_path = pillar['prometheus']['node_exporter']['install_path'] %}
+{% from "common/packages/prometheus/node_exporter/map.jinja" import node_exporter with context %}
+{% set install_path = node_exporter['install_path'] %}
 
 stop service:
   service.dead:

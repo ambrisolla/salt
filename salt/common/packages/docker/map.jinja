@@ -1,0 +1,15 @@
+#!jinja|yaml
+
+{% if grains['os'] == 'OEL' %}
+    {% if grains['osmajorrelease'] == 8 %}
+        {% set docker = {
+            'packages_prereqs' : ['yum-utils', 'zip', 'unzip'],
+            'packages_remove'  : ['runc'],
+            'packages_install' : ['docker-ce'],
+            'repository'       : {
+                'source' : 'https://download.docker.com/linux/centos/docker-ce.repo',
+                'name' : '/etc/yum.repos.d/docker.repo'
+            }            
+        } %}
+    {% endif %}
+{% endif %}

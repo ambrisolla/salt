@@ -1,0 +1,19 @@
+#!jinja|yaml
+
+# Set Katello hostname based on FQDN (prod / nprod)
+{% if grains['id'] | regex_match('(.*)-[1-9]n[0-9][0-9].(.*)')  %}
+  {% set hostname      = 'katello-v-1n01.npad.stone.com.br' %}
+{% endif %}
+
+# Set organization
+{% set organization = 'Stone' %}
+
+# Set ca_consumer package path
+{% set ca_consumer = 'https://' + hostname + '/pub/katello-ca-consumer-latest.noarch.rpm' %}
+
+# Set activation key based on S.O Version
+{% if grains['osmajorrelease'] == 7  %}
+  {% set activation_key = 'DefaultAK' %}
+{% elif grains['osmajorrelease'] == 8  %}
+  {% set activation_key = 'OracleLinux8AK' %}
+{% endif %}
